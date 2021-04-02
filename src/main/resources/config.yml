@@ -5,12 +5,23 @@
 #
 
 auto-sync: true # Auto-sync map once it got locked on a cartography table.
+copyright: true # Enable copyright system
 
 mapitem:
   lore: # The lore of map you want to added after sync.
     - ""
     - "&7UUID: %UUID%"
+    - "&7Author: %AUTHOR%"
+  copyright: # Do not change this section after first use.
+    enabled: "&cUnable to copy &7(Author can use /copyright to switch)"
+    disabled: "&aAble to copy &7(Author can use /copyright to switch)"
 
 message:
   already-sync: "&6[MapSync] &7This map is already synchronized."
-  success: "&6[MapSync] &aThis map is successfully synchronized!"
+  success-sync: "&6[MapSync] &aThis map is successfully synchronized!"
+  not-a-syncmap: "&6[MapSync] &cThis map has not been synchronized."
+  not-author: "&6[MapSync] &cYou are not the author of the map."
+  enable-copyright: "&6[MapSync] &aThis map can no longer be copied."
+  disable-copyright: "&6[MapSync] &aThis map can be copied now."
+  can-not-copy: "&6[MapSync] &cYou can't copy this map, it's protected by copyright."
+  can-not-zoom: "&6[MapSync] &cYou can't zoom out this map."

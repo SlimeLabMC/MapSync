@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -27,29 +26,34 @@ import java.util.logging.Level;
 public class MapUtils {
 
     MapSync plugin;
-    NamespacedKey key;
+    NamespacedKey idkey, copyright, author;
 
     public MapUtils(MapSync plugin){
         this.plugin = plugin;
-        key = new NamespacedKey(plugin, "mapid");
+        idkey = new NamespacedKey(plugin, "mapid");
+        copyright = new NamespacedKey(plugin, "copy");
+        author = new NamespacedKey(plugin, "author");
     }
 
     public boolean hasUUID(MapMeta map){
-        return map.getPersistentDataContainer().has(key, PersistentDataType.LONG);
+        return map.getPersistentDataContainer().has(idkey, PersistentDataType.LONG);
     }
 
     public Long getUUID(MapMeta map){
-        return map.getPersistentDataContainer().get(key, PersistentDataType.LONG);
+        return map.getPersistentDataContainer().get(idkey, PersistentDataType.LONG);
     }
 
-    public void applyUUID(ItemStack itemStack, Long uuid){
+    public void applyUUID(ItemStack itemStack, Long uuid, Player player){
         ItemMeta meta = itemStack.getItemMeta();
         ArrayList<String> lore = meta.hasLore() ? (ArrayList<String>) meta.getLore() : new ArrayList<>();
-        for(String text : plugin.getConfig().getStringList("mapitem.lore")){
-            lore.add(ChatColor.translateAlternateColorCodes('&', text.replace("%UUID%", uuid.toString())));
+        for(String text : plugin.MAP_LORE){
+            lore.add(ChatColor.translateAlternateColorCodes('&', text.replace("%UUID%", uuid.toString()).replace("%AUTHOR%", player.getName())));
         }
+        lore.add(plugin.COPYRIGHT_DISABLED_LORE);
         meta.setLore(lore);
-        meta.getPersistentDataContainer().set(key, PersistentDataType.LONG, uuid);
+        meta.getPersistentDataContainer().set(idkey, PersistentDataType.LONG, uuid);
+        meta.getPersistentDataContainer().set(copyright, PersistentDataType.BYTE, (byte)0);
+        meta.getPersistentDataContainer().set(author, PersistentDataType.STRING, player.getUniqueId().toString());
         itemStack.setItemMeta(meta);
     }
 
@@ -152,5 +156,44 @@ public class MapUtils {
     public String getDataPath(Long uuid){
         return plugin.getDataFolder() +
                 File.separator + "data" + File.separator + uuid + ".bin";
+    }
+
+    public void switchCopyright(ItemStack item, Player player){
+        if(canCopy(item)){
+            item.getItemMeta().getPersistentDataContainer().set(copyright, PersistentDataType.BYTE, (byte)0);
+            replaceLore(item, plugin.COPYRIGHT_DISABLED_LORE, plugin.COPYRIGHT_ENABLED_LORE);
+            player.sendMessage(plugin.COPYRIGHT_DISABLED);
+        }else{
+            item.getItemMeta().getPersistentDataContainer().set(copyright, PersistentDataType.BYTE, (byte)1);
+            replaceLore(item, plugin.COPYRIGHT_ENABLED_LORE, plugin.COPYRIGHT_DISABLED_LORE);
+            player.sendMessage(plugin.COPYRIGHT_ENABLED);
+        }
+    }
+
+    public void replaceLore(ItemStack item, String toReplace, String ReplaceFor){
+        ItemMeta meta = item.getItemMeta();
+        ArrayList<String> lore = (ArrayList<String>) meta.getLore();
+        for(int i=0; i<lore.size(); i++){
+            if(lore.get(i).equals(toReplace)){
+                lore.set(i, ReplaceFor);
+                meta.setLore(lore);
+                item.setItemMeta(meta);
+                return;
+            }
+        }
+        lore.add(ReplaceFor);
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+    }
+
+    public boolean canCopy(ItemStack item){
+        if(item.getItemMeta().getPersistentDataContainer().has(copyright, PersistentDataType.BYTE)){
+            return item.getItemMeta().getPersistentDataContainer().get(copyright, PersistentDataType.BYTE) != (byte) 1;
+        }
+        return true;
+    }
+
+    public String getAuthor(ItemStack item){
+        return item.getItemMeta().getPersistentDataContainer().get(author, PersistentDataType.STRING);
     }
 }

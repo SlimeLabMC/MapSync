@@ -23,35 +23,50 @@ public class CartographyTableListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onLock(InventoryClickEvent e){
-        if(e.getClickedInventory() instanceof CartographyInventory && e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.FILLED_MAP &&
-                e.getClickedInventory().getItem(1) != null && e.getClickedInventory().getItem(1).getType() == Material.GLASS_PANE){
-
+        if(e.getClickedInventory() instanceof CartographyInventory && e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.FILLED_MAP && e.getSlot() == 2 &&
+                e.getClickedInventory().getItem(1) != null){
             Player player = (Player) e.getWhoClicked();
-            if(!player.hasPermission("mapsync.use")) return;
-
             ItemStack map = e.getClickedInventory().getItem(0);
             MapMeta mapMeta = (MapMeta) map.getItemMeta();
             MapView mapView = mapMeta.getMapView();
 
-            Long uuid = plugin.getUtils().generateUUID(player);
+            switch (e.getClickedInventory().getItem(1).getType()) {
+                case GLASS_PANE:
+                    if(!player.hasPermission("mapsync.use")) return;
 
-            ItemStack lockedMap = e.getCurrentItem();
-            MapMeta lockedMapMeta = (MapMeta) lockedMap.getItemMeta();
+                    Long uuid = plugin.getUtils().generateUUID(player);
 
-            plugin.getMapDataManager().getMapSet().add(uuid);
+                    ItemStack lockedMap = e.getCurrentItem();
+                    MapMeta lockedMapMeta = (MapMeta) lockedMap.getItemMeta();
 
-            lockedMapMeta.getMapView().addRenderer(new MapRenderer() {
-                @Override
-                public void render(MapView map, MapCanvas canvas, Player player) {
-                }
-            }); // Avoid being rendered
-            lockedMap.setItemMeta(lockedMapMeta);
-            plugin.getUtils().applyUUID(lockedMap, uuid);
+                    plugin.getMapDataManager().getMapSet().add(uuid);
 
-            try{
-                plugin.getDatabaseManager().storeMapData(uuid, plugin.getUtils().getMapPixels(mapView));
-            }catch (Exception exception){
-                exception.printStackTrace();
+                    lockedMapMeta.getMapView().addRenderer(new MapRenderer() {
+                        @Override
+                        public void render(MapView map, MapCanvas canvas, Player player) {
+                        }
+                    }); // Avoid being rendered
+                    lockedMap.setItemMeta(lockedMapMeta);
+                    plugin.getUtils().applyUUID(lockedMap, uuid, player);
+
+                    try{
+                        plugin.getDatabaseManager().storeMapData(uuid, plugin.getUtils().getMapPixels(mapView));
+                    }catch (Exception exception){
+                        exception.printStackTrace();
+                    }
+
+                case PAPER:
+                    if(plugin.getUtils().hasUUID(mapMeta)) {
+                        e.setCancelled(true);
+                        player.closeInventory();
+                        player.sendMessage(plugin.CANNOT_ZOOM);
+                    }
+                case MAP:
+                    if(!plugin.getUtils().canCopy(map)){
+                        e.setCancelled(true);
+                        player.closeInventory();
+                        player.sendMessage(plugin.CANNOT_COPY);
+                    }
             }
         }
     }

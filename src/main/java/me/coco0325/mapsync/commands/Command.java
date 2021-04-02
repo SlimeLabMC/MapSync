@@ -1,7 +1,6 @@
 package me.coco0325.mapsync.commands;
 
 import me.coco0325.mapsync.MapSync;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,7 +31,7 @@ public class Command implements CommandExecutor {
 
                     MapMeta mapMeta = (MapMeta) item.getItemMeta();
                     if(plugin.getUtils().hasUUID(mapMeta)){
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("message.already-sync")));
+                        player.sendMessage(plugin.ALREADY_SYNC);
                         return true;
                     }
 
@@ -44,16 +43,38 @@ public class Command implements CommandExecutor {
                         }
                     }); // Avoid being rendered
                     item.setItemMeta(mapMeta);
-                    plugin.getUtils().applyUUID(item, uuid);
+                    plugin.getUtils().applyUUID(item, uuid, player);
                     try{
                         plugin.getDatabaseManager().storeMapData(uuid, plugin.getUtils().getMapPixels(mapMeta.getMapView()));
                     }catch (Exception exception){
                         exception.printStackTrace();
                     }
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("message.success")));
+                    player.sendMessage(plugin.SUCCESS_SYNC);
                 }
                 return true;
             }
+        }else if(command.getName().equals("copyright")){
+
+            if(sender instanceof Player && sender.hasPermission("mapsync.copyright")){
+                Player player = (Player) sender;
+                ItemStack item = player.getInventory().getItemInMainHand();
+                if(item.getType() == Material.FILLED_MAP){
+
+                    MapMeta mapMeta = (MapMeta) item.getItemMeta();
+                    if(!plugin.getUtils().hasUUID(mapMeta)) {
+                        player.sendMessage(plugin.NOT_A_SYNCMAP);
+                        return true;
+                    }
+
+                    if(!plugin.getUtils().getAuthor(item).equals(player.getUniqueId().toString())) {
+                        player.sendMessage(plugin.NOT_AUTHOR);
+                        return true;
+                    }
+
+                    plugin.getUtils().switchCopyright(item, player);
+                }
+            }
+            return true;
         }
         return false;
     }
