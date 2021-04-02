@@ -72,6 +72,8 @@ public class Command implements CommandExecutor {
                     }
 
                     plugin.getUtils().switchCopyright(item, player);
+                }else{
+                    player.sendMessage(plugin.HOLD_A_MAP);
                 }
             }
             return true;

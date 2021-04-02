@@ -159,14 +159,17 @@ public class MapUtils {
     }
 
     public void switchCopyright(ItemStack item, Player player){
+        ItemMeta meta = item.getItemMeta();
         if(canCopy(item)){
-            item.getItemMeta().getPersistentDataContainer().set(copyright, PersistentDataType.BYTE, (byte)0);
+            meta.getPersistentDataContainer().set(copyright, PersistentDataType.BYTE, (byte)1);
+            item.setItemMeta(meta);
             replaceLore(item, plugin.COPYRIGHT_DISABLED_LORE, plugin.COPYRIGHT_ENABLED_LORE);
-            player.sendMessage(plugin.COPYRIGHT_DISABLED);
-        }else{
-            item.getItemMeta().getPersistentDataContainer().set(copyright, PersistentDataType.BYTE, (byte)1);
-            replaceLore(item, plugin.COPYRIGHT_ENABLED_LORE, plugin.COPYRIGHT_DISABLED_LORE);
             player.sendMessage(plugin.COPYRIGHT_ENABLED);
+        }else{
+            meta.getPersistentDataContainer().set(copyright, PersistentDataType.BYTE, (byte)0);
+            item.setItemMeta(meta);
+            replaceLore(item, plugin.COPYRIGHT_ENABLED_LORE, plugin.COPYRIGHT_DISABLED_LORE);
+            player.sendMessage(plugin.COPYRIGHT_DISABLED);
         }
     }
 
@@ -188,7 +191,7 @@ public class MapUtils {
 
     public boolean canCopy(ItemStack item){
         if(item.getItemMeta().getPersistentDataContainer().has(copyright, PersistentDataType.BYTE)){
-            return item.getItemMeta().getPersistentDataContainer().get(copyright, PersistentDataType.BYTE) != (byte) 1;
+            return item.getItemMeta().getPersistentDataContainer().get(copyright, PersistentDataType.BYTE) == (byte)0;
         }
         return true;
     }

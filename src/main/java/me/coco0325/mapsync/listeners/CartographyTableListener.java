@@ -52,17 +52,10 @@ public class CartographyTableListener implements Listener {
                     }catch (Exception exception){
                         exception.printStackTrace();
                     }
-
-                case PAPER:
-                    if(plugin.getUtils().hasUUID(mapMeta)) {
-                        e.setCancelled(true);
-                        player.closeInventory();
-                        player.sendMessage(plugin.CANNOT_ZOOM);
-                    }
                 case MAP:
                     if(plugin.copyright && !plugin.getUtils().canCopy(map)){
                         e.setCancelled(true);
-                        player.closeInventory();
+                        e.getCurrentItem().setType(Material.AIR);
                         player.sendMessage(plugin.CANNOT_COPY);
                     }
             }

@@ -31,7 +31,7 @@ public final class MapSync extends JavaPlugin {
     public ArrayList<String> MAP_LORE;
     public String COPYRIGHT_ENABLED_LORE, COPYRIGHT_DISABLED_LORE, ALREADY_SYNC, SUCCESS_SYNC,
             COPYRIGHT_ENABLED, COPYRIGHT_DISABLED, CANNOT_COPY, CANNOT_ZOOM, NOT_A_SYNCMAP, NOT_AUTHOR,
-            NO_PERMISSION;
+            NO_PERMISSION, HOLD_A_MAP;
     public GriefPreventionHook griefPreventionHook = null;
     public boolean copyright;
 
@@ -71,7 +71,10 @@ public final class MapSync extends JavaPlugin {
         NOT_A_SYNCMAP = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.not-a-syncmap"));
         NOT_AUTHOR = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.not-author"));
         NO_PERMISSION = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.no-permission"));
-        this.getCommand("syncmap").setExecutor(new Command(this));
+        HOLD_A_MAP = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.hold-a-map"));
+        Command command = new Command(this);
+        this.getCommand("syncmap").setExecutor(command);
+        this.getCommand("copyright").setExecutor(command);
         mapUtils = new MapUtils(this);
         databaseManager = new DatabaseManager(this);
         mapDataManager = new MapDataManager(this);
@@ -82,10 +85,10 @@ public final class MapSync extends JavaPlugin {
         if(copyright){
             Bukkit.getPluginManager().registerEvents(new CraftingCopyListener(this), this);
         }
-        Bukkit.getPluginManager().registerEvents(new MapInitListener(this), this);
         Bukkit.getPluginManager().registerEvents(new MapRenderListener(this), this);
         if(getConfig().getBoolean("hooks.griefprevention") && getServer().getPluginManager().isPluginEnabled("GriefPrevention")){
             griefPreventionHook = new GriefPreventionHook();
+            Bukkit.getPluginManager().registerEvents(new MapInitListener(this), this);
         }
     }
 

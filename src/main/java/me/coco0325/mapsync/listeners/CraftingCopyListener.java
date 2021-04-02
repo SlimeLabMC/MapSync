@@ -8,6 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.logging.Level;
+
 public class CraftingCopyListener implements Listener {
 
     MapSync plugin;

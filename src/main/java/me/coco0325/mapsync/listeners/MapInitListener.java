@@ -16,10 +16,9 @@ public class MapInitListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onMapOpen(PlayerInteractEvent e){
-        if(e.getAction() == Action.RIGHT_CLICK_AIR ||
-                e.getAction() == Action.RIGHT_CLICK_BLOCK){
+        if(e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK){
             if(e.getItem() != null && e.getItem().getType() == Material.MAP && !plugin.griefPreventionHook.canCreateMap(e.getPlayer())) {
                 e.setCancelled(true);
                 e.getPlayer().sendMessage(plugin.NO_PERMISSION);
