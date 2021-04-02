@@ -37,7 +37,7 @@ public class CartographyTableListener implements Listener {
 
             ItemStack lockedMap = e.getCurrentItem();
             MapMeta lockedMapMeta = (MapMeta) lockedMap.getItemMeta();
-            plugin.getUtils().applyUUID(lockedMap, uuid);
+
             plugin.getMapDataManager().getMapSet().add(uuid);
 
             lockedMapMeta.getMapView().addRenderer(new MapRenderer() {
@@ -46,6 +46,7 @@ public class CartographyTableListener implements Listener {
                 }
             }); // Avoid being rendered
             lockedMap.setItemMeta(lockedMapMeta);
+            plugin.getUtils().applyUUID(lockedMap, uuid);
 
             try{
                 plugin.getDatabaseManager().storeMapData(uuid, plugin.getUtils().getMapPixels(mapView));

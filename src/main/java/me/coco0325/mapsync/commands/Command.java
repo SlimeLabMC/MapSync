@@ -37,7 +37,6 @@ public class Command implements CommandExecutor {
                     }
 
                     Long uuid = plugin.getUtils().generateUUID(player);
-                    plugin.getUtils().applyUUID(item, uuid);
                     plugin.getMapDataManager().getMapSet().add(uuid);
                     mapMeta.getMapView().addRenderer(new MapRenderer() {
                         @Override
@@ -45,6 +44,7 @@ public class Command implements CommandExecutor {
                         }
                     }); // Avoid being rendered
                     item.setItemMeta(mapMeta);
+                    plugin.getUtils().applyUUID(item, uuid);
                     try{
                         plugin.getDatabaseManager().storeMapData(uuid, plugin.getUtils().getMapPixels(mapMeta.getMapView()));
                     }catch (Exception exception){

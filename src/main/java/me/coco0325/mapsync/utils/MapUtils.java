@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -43,7 +44,6 @@ public class MapUtils {
 
     public void applyUUID(ItemStack itemStack, Long uuid){
         ItemMeta meta = itemStack.getItemMeta();
-        if(meta == null) return;
         ArrayList<String> lore = meta.hasLore() ? (ArrayList<String>) meta.getLore() : new ArrayList<>();
         for(String text : plugin.getConfig().getStringList("mapitem.lore")){
             lore.add(ChatColor.translateAlternateColorCodes('&', text.replace("%UUID%", uuid.toString())));
@@ -61,7 +61,8 @@ public class MapUtils {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 callback.accept(Files.readAllBytes(Paths.get(getDataPath(uuid))));
-            } catch (IOException e) {
+            } catch (Exception e){
+                callback.accept(null);
                 e.printStackTrace();
             }
         });
@@ -105,11 +106,14 @@ public class MapUtils {
         if(isHandled(mapMeta)) return;
         if(plugin.getUtils().hasUUID(mapMeta)){
             Long uuid = plugin.getUtils().getUUID(mapMeta);
-            plugin.getLogger().log(Level.INFO, "Fetching map.");
             if(plugin.getMapDataManager().isLocal(uuid)){
                 toByteArray(uuid, (bytes) -> Bukkit.getScheduler().runTask(plugin, () -> {
                     try {
-                        plugin.getLogger().log(Level.INFO, "Local storage.");
+                        if(bytes == null) {
+                            plugin.getMapDataManager().getMapSet().remove(uuid);
+                            renderMap(item);
+                        }
+                        plugin.getLogger().log(Level.INFO, "Loaded map from local storage.");
                         render(item, bytes);
                         //setMapPixels(bytes, mapMeta.getMapView());
                     } catch (Exception exception) {
@@ -120,7 +124,7 @@ public class MapUtils {
                 plugin.getDatabaseManager().fetchMapData(uuid, (bytes) -> Bukkit.getScheduler().runTask(plugin, () -> {
                     plugin.getMapDataManager().getMapSet().add(uuid);
                     try {
-                        plugin.getLogger().log(Level.INFO, "Downloaded.");
+                        plugin.getLogger().log(Level.INFO, "Downloaded map from database.");
                         render(item, bytes);
                         //setMapPixels(bytes, mapMeta.getMapView());
                     } catch (Exception exception) {
