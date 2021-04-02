@@ -1,0 +1,13 @@
+name: MapSync
+version: ${project.version}
+main: me.coco0325.mapsync.MapSync
+api-version: 1.16
+authors: [ coco0325 ]
+description: Sync map items between multiple spigot servers.
+commands:
+  syncmap:
+    description: Main command
+permissions:
+  mapsync.use:
+    description: Can make sync maps
+    default: op

@@ -1,0 +1,9 @@
+# Enter your MySQL database info.
+
+database: database
+host: localhost
+port: 3306
+username: root
+password: password
+min_size: 2
+max_size: 10

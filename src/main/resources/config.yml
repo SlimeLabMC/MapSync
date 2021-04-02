@@ -1,0 +1,16 @@
+#
+# Configuration of Mapsync
+#
+# MapSync - Created by Mr.Coco, 2021
+#
+
+auto-sync: true # Auto-sync map once it got locked on a cartography table.
+
+mapitem:
+  lore: # The lore of map you want to added after sync.
+    - ""
+    - "&7UUID: %UUID%"
+
+message:
+  already-sync: "&6[MapSync] &7This map is already synchronized."
+  success: "&6[MapSync] &aThis map is successfully synchronized!"
