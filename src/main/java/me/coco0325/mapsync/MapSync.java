@@ -3,8 +3,10 @@ package me.coco0325.mapsync;
 import me.coco0325.mapsync.commands.Command;
 import me.coco0325.mapsync.datastore.DatabaseManager;
 import me.coco0325.mapsync.datastore.MapDataManager;
+import me.coco0325.mapsync.hook.GriefPreventionHook;
 import me.coco0325.mapsync.listeners.CartographyTableListener;
 import me.coco0325.mapsync.listeners.CraftingCopyListener;
+import me.coco0325.mapsync.listeners.MapInitListener;
 import me.coco0325.mapsync.listeners.MapRenderListener;
 import me.coco0325.mapsync.utils.MapUtils;
 import org.bukkit.Bukkit;
@@ -28,7 +30,10 @@ public final class MapSync extends JavaPlugin {
     public FileConfiguration dbconfig, config, mapdata;
     public ArrayList<String> MAP_LORE;
     public String COPYRIGHT_ENABLED_LORE, COPYRIGHT_DISABLED_LORE, ALREADY_SYNC, SUCCESS_SYNC,
-            COPYRIGHT_ENABLED, COPYRIGHT_DISABLED, CANNOT_COPY, CANNOT_ZOOM, NOT_A_SYNCMAP, NOT_AUTHOR;
+            COPYRIGHT_ENABLED, COPYRIGHT_DISABLED, CANNOT_COPY, CANNOT_ZOOM, NOT_A_SYNCMAP, NOT_AUTHOR,
+            NO_PERMISSION;
+    public GriefPreventionHook griefPreventionHook = null;
+    public boolean copyright;
 
     @Override
     public void onEnable() {
@@ -65,6 +70,7 @@ public final class MapSync extends JavaPlugin {
         CANNOT_ZOOM = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.can-not-zoom"));
         NOT_A_SYNCMAP = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.not-a-syncmap"));
         NOT_AUTHOR = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.not-author"));
+        NO_PERMISSION = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.no-permission"));
         this.getCommand("syncmap").setExecutor(new Command(this));
         mapUtils = new MapUtils(this);
         databaseManager = new DatabaseManager(this);
@@ -72,8 +78,15 @@ public final class MapSync extends JavaPlugin {
         if(getConfig().getBoolean("auto-sync")){
             Bukkit.getPluginManager().registerEvents(new CartographyTableListener(this), this);
         }
-        Bukkit.getPluginManager().registerEvents(new CraftingCopyListener(this), this);
+        copyright = getConfig().getBoolean("copyright");
+        if(copyright){
+            Bukkit.getPluginManager().registerEvents(new CraftingCopyListener(this), this);
+        }
+        Bukkit.getPluginManager().registerEvents(new MapInitListener(this), this);
         Bukkit.getPluginManager().registerEvents(new MapRenderListener(this), this);
+        if(getConfig().getBoolean("hooks.griefprevention") && getServer().getPluginManager().isPluginEnabled("GriefPrevention")){
+            griefPreventionHook = new GriefPreventionHook();
+        }
     }
 
     public void saveAll() throws IOException {

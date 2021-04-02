@@ -39,8 +39,6 @@ public class CartographyTableListener implements Listener {
                     ItemStack lockedMap = e.getCurrentItem();
                     MapMeta lockedMapMeta = (MapMeta) lockedMap.getItemMeta();
 
-                    plugin.getMapDataManager().getMapSet().add(uuid);
-
                     lockedMapMeta.getMapView().addRenderer(new MapRenderer() {
                         @Override
                         public void render(MapView map, MapCanvas canvas, Player player) {
@@ -62,7 +60,7 @@ public class CartographyTableListener implements Listener {
                         player.sendMessage(plugin.CANNOT_ZOOM);
                     }
                 case MAP:
-                    if(!plugin.getUtils().canCopy(map)){
+                    if(plugin.copyright && !plugin.getUtils().canCopy(map)){
                         e.setCancelled(true);
                         player.closeInventory();
                         player.sendMessage(plugin.CANNOT_COPY);

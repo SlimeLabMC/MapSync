@@ -2,7 +2,8 @@ name: MapSync
 version: ${project.version}
 main: me.coco0325.mapsync.MapSync
 api-version: 1.16
-authors: [ coco0325 ]
+authors: [coco0325]
+softdepend: [GriefPrevention]
 description: Sync map items between multiple spigot servers.
 commands:
   syncmap:

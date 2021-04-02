@@ -7,6 +7,9 @@
 auto-sync: true # Auto-sync map once it got locked on a cartography table.
 copyright: true # Enable copyright system
 
+hooks: # Only the players with the build permission can create maps.
+  griefprevention: true
+
 mapitem:
   lore: # The lore of map you want to added after sync.
     - ""
@@ -21,6 +24,7 @@ message:
   success-sync: "&6[MapSync] &aThis map is successfully synchronized!"
   not-a-syncmap: "&6[MapSync] &cThis map has not been synchronized."
   not-author: "&6[MapSync] &cYou are not the author of the map."
+  no-permission: "&6[MapSync] &cYou need build permission in this claim to open a new map."
   enable-copyright: "&6[MapSync] &aThis map can no longer be copied."
   disable-copyright: "&6[MapSync] &aThis map can be copied now."
   can-not-copy: "&6[MapSync] &cYou can't copy this map, it's protected by copyright."
