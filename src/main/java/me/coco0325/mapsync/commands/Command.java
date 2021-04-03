@@ -1,6 +1,7 @@
 package me.coco0325.mapsync.commands;
 
 import me.coco0325.mapsync.MapSync;
+import me.coco0325.mapsync.utils.MapUtils;
 import org.bukkit.Material;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,6 +11,8 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+
+import java.util.Objects;
 
 public class Command implements CommandExecutor {
 
@@ -30,26 +33,25 @@ public class Command implements CommandExecutor {
                 if(item.getType() == Material.FILLED_MAP){
 
                     MapMeta mapMeta = (MapMeta) item.getItemMeta();
-                    if(plugin.getUtils().hasUUID(mapMeta)){
+                    if(MapUtils.hasUUID(mapMeta)){
                         player.sendMessage(plugin.ALREADY_SYNC);
                         return true;
                     }
 
-                    Long uuid = plugin.getUtils().generateUUID(player);
-                    plugin.getMapDataManager().getMapSet().add(uuid);
-                    mapMeta.getMapView().addRenderer(new MapRenderer() {
+                    Long uuid = MapUtils.generateUUID(player);
+                    Objects.requireNonNull(mapMeta.getMapView()).addRenderer(new MapRenderer() {
                         @Override
                         public void render(MapView map, MapCanvas canvas, Player player) {
                         }
                     }); // Avoid being rendered
                     item.setItemMeta(mapMeta);
-                    plugin.getUtils().applyUUID(item, uuid, player);
+                    MapUtils.applyUUID(item, uuid, player);
                     try{
-                        plugin.getDatabaseManager().storeMapData(uuid, plugin.getUtils().getMapPixels(mapMeta.getMapView()));
+                        plugin.getDatabaseManager().storeMapData(uuid, MapUtils.getMapPixels(mapMeta.getMapView()));
+                        player.sendMessage(plugin.SUCCESS_SYNC);
                     }catch (Exception exception){
                         exception.printStackTrace();
                     }
-                    player.sendMessage(plugin.SUCCESS_SYNC);
                 }
                 return true;
             }
@@ -61,17 +63,17 @@ public class Command implements CommandExecutor {
                 if(item.getType() == Material.FILLED_MAP){
 
                     MapMeta mapMeta = (MapMeta) item.getItemMeta();
-                    if(!plugin.getUtils().hasUUID(mapMeta)) {
+                    if(!MapUtils.hasUUID(mapMeta)) {
                         player.sendMessage(plugin.NOT_A_SYNCMAP);
                         return true;
                     }
 
-                    if(!plugin.getUtils().getAuthor(item).equals(player.getUniqueId().toString())) {
+                    if(!MapUtils.getAuthor(item).equals(player.getUniqueId().toString())) {
                         player.sendMessage(plugin.NOT_AUTHOR);
                         return true;
                     }
 
-                    plugin.getUtils().switchCopyright(item, player);
+                    MapUtils.switchCopyright(item, player);
                 }else{
                     player.sendMessage(plugin.HOLD_A_MAP);
                 }

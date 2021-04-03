@@ -1,6 +1,7 @@
 package me.coco0325.mapsync.listeners;
 
 import me.coco0325.mapsync.MapSync;
+import me.coco0325.mapsync.utils.MapUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
@@ -24,7 +25,7 @@ public class MapRenderListener implements Listener {
 
     public void initMap(ItemStack item){
         if(item != null && item.getType() == Material.FILLED_MAP && item.getItemMeta() instanceof MapMeta){
-            plugin.getUtils().renderMap(item);
+            MapUtils.renderMap(item);
         }
     }
 

@@ -1,7 +1,6 @@
 package me.coco0325.mapsync.datastore;
 
 import me.coco0325.mapsync.MapSync;
-import org.bukkit.inventory.meta.MapMeta;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,14 +21,6 @@ public class MapDataManager {
 
     public HashSet<Long> getMapSet(){
         return maplist;
-    }
-
-    public void storeMap(MapMeta mapMeta) throws Exception {
-        plugin.getUtils().writeFilefromByteArray(plugin.getUtils().getMapPixels(mapMeta.getMapView()), plugin.getUtils().getDataPath(plugin.getUtils().getUUID(mapMeta)));
-    }
-
-    public void getMapData(MapMeta mapMeta){
-
     }
 
     public boolean isLocal(Long uuid){

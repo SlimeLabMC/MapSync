@@ -1,6 +1,7 @@
 package me.coco0325.mapsync.listeners;
 
 import me.coco0325.mapsync.MapSync;
+import me.coco0325.mapsync.utils.MapUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,7 +35,7 @@ public class CartographyTableListener implements Listener {
                 case GLASS_PANE:
                     if(!player.hasPermission("mapsync.use")) return;
 
-                    Long uuid = plugin.getUtils().generateUUID(player);
+                    Long uuid = MapUtils.generateUUID(player);
 
                     ItemStack lockedMap = e.getCurrentItem();
                     MapMeta lockedMapMeta = (MapMeta) lockedMap.getItemMeta();
@@ -45,15 +46,16 @@ public class CartographyTableListener implements Listener {
                         }
                     }); // Avoid being rendered
                     lockedMap.setItemMeta(lockedMapMeta);
-                    plugin.getUtils().applyUUID(lockedMap, uuid, player);
+                    MapUtils.applyUUID(lockedMap, uuid, player);
 
                     try{
-                        plugin.getDatabaseManager().storeMapData(uuid, plugin.getUtils().getMapPixels(mapView));
+                        plugin.getDatabaseManager().storeMapData(uuid, MapUtils.getMapPixels(mapView));
+                        player.sendMessage(plugin.SUCCESS_SYNC);
                     }catch (Exception exception){
                         exception.printStackTrace();
                     }
                 case MAP:
-                    if(plugin.copyright && !plugin.getUtils().canCopy(map)){
+                    if(plugin.copyright && !MapUtils.canCopy(map)){
                         e.setCancelled(true);
                         e.getCurrentItem().setType(Material.AIR);
                         player.sendMessage(plugin.CANNOT_COPY);

@@ -3,6 +3,8 @@ package me.coco0325.mapsync.datastore;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import me.coco0325.mapsync.MapSync;
+import me.coco0325.mapsync.utils.FileUtils;
+import me.coco0325.mapsync.utils.MapUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -52,10 +54,12 @@ public class DatabaseManager {
     public void storeMapData(Long uuid, byte[] data){
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try{
+                byte[] compressed = FileUtils.compress(data);
+                FileUtils.writeFilefromByteArray(compressed, uuid);
                 Connection connection = getConnection();
                 PreparedStatement stmt = connection.prepareStatement("INSERT INTO MapSync (uuid, map) VALUES(?, ?)");
                 stmt.setLong(1, uuid);
-                stmt.setBytes(2, data);
+                stmt.setBytes(2, compressed);
                 stmt.execute();
                 connection.close();
             }catch (Exception e){
@@ -73,8 +77,8 @@ public class DatabaseManager {
                 ResultSet resultSet = statement.executeQuery();
                 if(resultSet.next()){
                     byte[] rawmap = resultSet.getBytes("map");
-                    if(rawmap != null) plugin.getUtils().writeFilefromByteArray(rawmap, plugin.getUtils().getDataPath(uuid));
-                    callback.accept(rawmap);
+                    if(rawmap != null) FileUtils.writeFilefromByteArray(rawmap, uuid);
+                    callback.accept(FileUtils.decompress(rawmap));
                 }
                 connection.close();
             } catch (SQLException throwables) {
