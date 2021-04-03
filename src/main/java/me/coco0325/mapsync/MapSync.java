@@ -15,11 +15,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public final class MapSync extends JavaPlugin {
 
@@ -31,6 +33,7 @@ public final class MapSync extends JavaPlugin {
             COPYRIGHT_ENABLED, COPYRIGHT_DISABLED, CANNOT_COPY, CANNOT_ZOOM, NOT_A_SYNCMAP, NOT_AUTHOR,
             NO_PERMISSION, HOLD_A_MAP;
     public GriefPreventionHook griefPreventionHook = null;
+    public String servername;
     public boolean copyright;
     public static MapSync instance;
 
@@ -51,6 +54,15 @@ public final class MapSync extends JavaPlugin {
     }
 
     public void setup() {
+
+        try{
+            Properties props = new Properties();
+            props.load(new FileInputStream(this.getServer().getWorldContainer().getAbsolutePath() + File.separator + "server.properties"));
+            servername = props.getProperty("server-name");
+        }catch (Exception e){
+            e.printStackTrace();
+            this.getPluginLoader().disablePlugin(this);
+        }
 
         saveResource("config.yml", false);
         saveResource("database.yml", false);
@@ -130,6 +142,10 @@ public final class MapSync extends JavaPlugin {
 
     public DatabaseManager getDatabaseManager(){
         return databaseManager;
+    }
+
+    public String getServername(){
+        return servername;
     }
 
 }

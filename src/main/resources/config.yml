@@ -11,7 +11,7 @@ hooks: # Only the players with the build permission can create maps.
   griefprevention: false
 
 mapitem:
-  lore: # The lore of map you want to added after sync.
+  lore: # The lore of map you want to add after sync.
     - ""
     - "&7UUID: %UUID%"
     - "&7Author: %AUTHOR%"

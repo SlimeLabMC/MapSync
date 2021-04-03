@@ -24,6 +24,7 @@ public class MapUtils {
     private static final NamespacedKey idkey = new NamespacedKey(plugin, "mapid");
     private static final NamespacedKey copyright = new NamespacedKey(plugin, "copy");
     private static final NamespacedKey author = new NamespacedKey(plugin, "author");
+    private static final NamespacedKey server = new NamespacedKey(plugin, "server");
 
     public static boolean hasUUID(MapMeta map){
         return map.getPersistentDataContainer().has(idkey, PersistentDataType.LONG);
@@ -54,10 +55,12 @@ public class MapUtils {
     public static void render(ItemStack itemStack, byte[] bytes){
         if(!(itemStack.getItemMeta() instanceof MapMeta)) return;
         MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
+
         for(MapRenderer mapRenderer : mapMeta.getMapView().getRenderers()){
             mapMeta.getMapView().removeRenderer(mapRenderer);
         }
-        mapMeta.getMapView().addRenderer(new MapRenderer() {
+
+        Objects.requireNonNull(mapMeta.getMapView()).addRenderer(new MapRenderer() {
             @Override
             public void render(MapView map, MapCanvas canvas, Player player) {
                 for(int i=0; i<128; i++){
@@ -104,6 +107,8 @@ public class MapUtils {
                     }
                 }));
             }
+        }else{
+            normalMapRender(item);
         }
     }
 
@@ -161,5 +166,27 @@ public class MapUtils {
 
     public static String getAuthor(ItemStack item){
         return Objects.requireNonNull(item.getItemMeta()).getPersistentDataContainer().get(author, PersistentDataType.STRING);
+    }
+
+    public static void normalMapRender(ItemStack item){
+        MapMeta meta = (MapMeta) item.getItemMeta();
+        if(Objects.requireNonNull(item.getItemMeta()).getPersistentDataContainer().has(server, PersistentDataType.STRING)){
+            if(!plugin.getServername().equals(item.getItemMeta().getPersistentDataContainer().get(server, PersistentDataType.STRING))){
+
+                for(MapRenderer mapRenderer : meta.getMapView().getRenderers()){
+                    meta.getMapView().removeRenderer(mapRenderer);
+                }
+
+                Objects.requireNonNull(meta.getMapView()).addRenderer(new MapRenderer() {
+                    @Override
+                    public void render(MapView map, MapCanvas canvas, Player player) {
+                    }
+                });
+                item.setItemMeta(meta);
+            }
+        }else{
+            meta.getPersistentDataContainer().set(server, PersistentDataType.STRING, plugin.getServername());
+            item.setItemMeta(meta);
+        }
     }
 }
