@@ -86,5 +86,12 @@
             <version>16.17.1</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.TheBusyBiscuit</groupId>
+            <artifactId>Slimefun4</artifactId>
+            <version>4.8</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/Coco/Documents/JAVA Projects/Slimefun/target/Slimefun v4.8.jar</systemPath>
+        </dependency>
     </dependencies>
 </project>

@@ -5,15 +5,3 @@ api-version: 1.16
 authors: [coco0325]
 softdepend: [GriefPrevention]
 description: Sync map items between multiple spigot servers.
-commands:
-  syncmap:
-    description: Make locked map sync.
-  copyright:
-    description: Switch copyright of the map.
-permissions:
-  mapsync.use:
-    description: Can make sync maps and use /syncmap
-    default: op
-  mapsync.copyright:
-    description: Can use /copyright
-    default: op

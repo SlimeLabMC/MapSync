@@ -30,8 +30,8 @@ public class MapRenderListener implements Listener {
     }
 
     @EventHandler
-    public void onChunkLoad(ChunkLoadEvent event) {
-        for (Entity entity : event.getChunk().getEntities()) {
+    public void onChunkLoad(ChunkLoadEvent e) {
+        for (Entity entity : e.getChunk().getEntities()) {
             if (entity instanceof ItemFrame) {
                 initMap(((ItemFrame) entity).getItem());
             }
@@ -39,27 +39,27 @@ public class MapRenderListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInv(PlayerItemHeldEvent event) {
-        ItemStack item = event.getPlayer().getInventory().getItem(event.getNewSlot());
+    public void onPlayerInv(PlayerItemHeldEvent e) {
+        ItemStack item = e.getPlayer().getInventory().getItem(e.getNewSlot());
         initMap(item);
     }
 
     @EventHandler
-    public void onPlayerPickup(EntityPickupItemEvent event) {
-        if (!(event.getEntity() instanceof HumanEntity)) {
+    public void onPlayerPickup(EntityPickupItemEvent e) {
+        if (!(e.getEntity() instanceof HumanEntity)) {
             return;
         }
-        initMap(event.getItem().getItemStack());
+        initMap(e.getItem().getItemStack());
     }
 
     @EventHandler
-    public void onPlayerInventoryPlace(InventoryClickEvent event) {
-        switch (event.getAction()) {
+    public void onPlayerInventoryPlace(InventoryClickEvent e) {
+        switch (e.getAction()) {
             case PLACE_ALL:
             case PLACE_ONE:
             case PLACE_SOME:
             case SWAP_WITH_CURSOR:
-                initMap(event.getCursor());
+                initMap(e.getCursor());
                 break;
             default:
 

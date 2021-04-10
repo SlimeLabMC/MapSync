@@ -4,7 +4,6 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import me.coco0325.mapsync.MapSync;
 import me.coco0325.mapsync.utils.FileUtils;
-import me.coco0325.mapsync.utils.MapUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 

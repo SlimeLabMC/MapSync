@@ -1,6 +1,5 @@
 package me.coco0325.mapsync;
 
-import me.coco0325.mapsync.commands.Command;
 import me.coco0325.mapsync.datastore.DatabaseManager;
 import me.coco0325.mapsync.datastore.MapDataManager;
 import me.coco0325.mapsync.hook.GriefPreventionHook;
@@ -86,10 +85,6 @@ public final class MapSync extends JavaPlugin {
         NOT_AUTHOR = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.not-author"));
         NO_PERMISSION = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.no-permission"));
         HOLD_A_MAP = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.hold-a-map"));
-
-        Command command = new Command(this);
-        this.getCommand("syncmap").setExecutor(command);
-        this.getCommand("copyright").setExecutor(command);
 
         databaseManager = new DatabaseManager(this);
         mapDataManager = new MapDataManager(this);

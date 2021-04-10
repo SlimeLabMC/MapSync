@@ -3,6 +3,7 @@ package me.coco0325.mapsync.utils;
 import me.coco0325.mapsync.MapSync;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -170,6 +171,7 @@ public class MapUtils {
 
     public static void normalMapRender(ItemStack item){
         MapMeta meta = (MapMeta) item.getItemMeta();
+
         if(Objects.requireNonNull(item.getItemMeta()).getPersistentDataContainer().has(server, PersistentDataType.STRING)){
             if(!plugin.getServername().equals(item.getItemMeta().getPersistentDataContainer().get(server, PersistentDataType.STRING))){
 
