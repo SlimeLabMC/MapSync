@@ -1,16 +1,29 @@
 package me.coco0325.mapsync;
 
+import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.setup.DefaultCategories;
+import io.github.thebusybiscuit.slimefun4.implementation.setup.SlimefunItemSetup;
+import io.github.thebusybiscuit.slimefun4.utils.itemstack.ColoredFireworkStar;
 import me.coco0325.mapsync.datastore.DatabaseManager;
 import me.coco0325.mapsync.datastore.MapDataManager;
 import me.coco0325.mapsync.hook.GriefPreventionHook;
+import me.coco0325.mapsync.items.MapRune;
 import me.coco0325.mapsync.listeners.CartographyTableListener;
 import me.coco0325.mapsync.listeners.CraftingCopyListener;
 import me.coco0325.mapsync.listeners.MapInitListener;
 import me.coco0325.mapsync.listeners.MapRenderListener;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import me.mrCookieSlime.Slimefun.Lists.RecipeType;
+import me.mrCookieSlime.Slimefun.Objects.Category;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import me.mrCookieSlime.Slimefun.api.Slimefun;
+import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -22,7 +35,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
 
-public final class MapSync extends JavaPlugin {
+public final class MapSync extends JavaPlugin implements SlimefunAddon {
 
     public DatabaseManager databaseManager;
     public MapDataManager mapDataManager;
@@ -35,6 +48,7 @@ public final class MapSync extends JavaPlugin {
     public String servername;
     public boolean copyright;
     public static MapSync instance;
+    public final SlimefunItemStack MAP_RUNE = new SlimefunItemStack("ANCIENT_RUNE_MAP", new ColoredFireworkStar(Color.fromRGB(111, 83, 77), "&7遠古魔法符文 &8&l[&6&l圖&8&l]", "&e將此符文丟至一掉落的跨分流地圖旁", "&6封印該地圖 使其無法再被拷印"));
 
     @Override
     public void onEnable() {
@@ -106,6 +120,14 @@ public final class MapSync extends JavaPlugin {
         }
     }
 
+    public void slimefunAddonSetup() {
+        Category category = SlimefunItemSetup.categories.magicalResources;
+        new MapRune(category, MAP_RUNE, RecipeType.ANCIENT_ALTAR,
+                new ItemStack[]{new ItemStack(Material.IRON_BARS), SlimefunItems.MAGIC_LUMP_2, new ItemStack(Material.IRON_BARS), new ItemStack(Material.MAP), SlimefunItems.BLANK_RUNE, new ItemStack(Material.MAP), new ItemStack(Material.IRON_BARS), SlimefunItems.MAGIC_LUMP_2, new ItemStack(Material.IRON_BARS)},
+                new SlimefunItemStack(MAP_RUNE, 4))
+                .register(this);
+    }
+
     public void saveAll() throws IOException {
         mapDataManager.saveMapSet();
         mapdata.save(new File(getDataFolder()+File.separator+"mapdata.yml"));
@@ -143,4 +165,13 @@ public final class MapSync extends JavaPlugin {
         return servername;
     }
 
+    @Override
+    public JavaPlugin getJavaPlugin() {
+        return this;
+    }
+
+    @Override
+    public String getBugTrackerURL() {
+        return null;
+    }
 }
