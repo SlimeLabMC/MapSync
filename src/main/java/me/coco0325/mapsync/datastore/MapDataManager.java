@@ -2,29 +2,38 @@ package me.coco0325.mapsync.datastore;
 
 import me.coco0325.mapsync.MapSync;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MapDataManager {
 
     MapSync plugin;
-    HashSet<Long> maplist;
+    HashMap<Long, Integer> maplist = new HashMap<>();
 
     public MapDataManager(MapSync plugin){
         this.plugin = plugin;
-        maplist = new HashSet<>(plugin.getMapdata().getLongList("data"));
+        for(String str : plugin.getMapdata().getStringList("data")){
+            maplist.put(Long.parseLong(str.substring(0, 18)), Integer.parseInt(str.substring(18)));
+        }
     }
 
     public void saveMapSet(){
-        plugin.getMapdata().set("data", new ArrayList<>(maplist));
+        List<String> data = maplist.keySet().stream().map(uuid ->
+                uuid.toString()+maplist.get(uuid).toString()).collect(Collectors.toList());
+        plugin.getMapdata().set("data", data);
     }
 
-    public HashSet<Long> getMapSet(){
+    public HashMap<Long, Integer> getMapMap(){
         return maplist;
     }
 
+    public Integer getLocalId(Long uuid){
+        return maplist.get(uuid);
+    }
+
     public boolean isLocal(Long uuid){
-        return maplist.contains(uuid);
+        return maplist.containsKey(uuid);
     }
 
 }

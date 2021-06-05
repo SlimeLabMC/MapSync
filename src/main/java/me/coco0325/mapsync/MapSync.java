@@ -2,8 +2,6 @@ package me.coco0325.mapsync;
 
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.setup.DefaultCategories;
 import io.github.thebusybiscuit.slimefun4.implementation.setup.SlimefunItemSetup;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ColoredFireworkStar;
 import me.coco0325.mapsync.datastore.DatabaseManager;
@@ -16,11 +14,11 @@ import me.coco0325.mapsync.listeners.MapInitListener;
 import me.coco0325.mapsync.listeners.MapRenderListener;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -48,13 +46,13 @@ public final class MapSync extends JavaPlugin implements SlimefunAddon {
     public String servername;
     public boolean copyright;
     public static MapSync instance;
-    public final SlimefunItemStack MAP_RUNE = new SlimefunItemStack("ANCIENT_RUNE_MAP", new ColoredFireworkStar(Color.fromRGB(111, 83, 77), "&7遠古魔法符文 &8&l[&6&l圖&8&l]", "&e將此符文丟至一掉落的跨分流地圖旁", "&6封印該地圖 使其無法再被拷印"));
 
     @Override
     public void onEnable() {
         instance = this;
         setup();
         createTable();
+        slimefunAddonSetup();
     }
 
     @Override
@@ -121,6 +119,7 @@ public final class MapSync extends JavaPlugin implements SlimefunAddon {
     }
 
     public void slimefunAddonSetup() {
+        final SlimefunItemStack MAP_RUNE = new SlimefunItemStack("ANCIENT_RUNE_MAP", new ColoredFireworkStar(Color.fromRGB(111, 83, 77), "&7遠古魔法符文 &8&l[&6&l圖&8&l]", "&e將此符文丟至一掉落的跨分流地圖旁", "&6封印該地圖 使其無法再被拷印"));
         Category category = SlimefunItemSetup.categories.magicalResources;
         new MapRune(category, MAP_RUNE, RecipeType.ANCIENT_ALTAR,
                 new ItemStack[]{new ItemStack(Material.IRON_BARS), SlimefunItems.MAGIC_LUMP_2, new ItemStack(Material.IRON_BARS), new ItemStack(Material.MAP), SlimefunItems.BLANK_RUNE, new ItemStack(Material.MAP), new ItemStack(Material.IRON_BARS), SlimefunItems.MAGIC_LUMP_2, new ItemStack(Material.IRON_BARS)},

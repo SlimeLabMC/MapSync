@@ -2,7 +2,6 @@ package me.coco0325.mapsync.utils;
 
 import me.coco0325.mapsync.MapSync;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -63,12 +62,12 @@ public class FileUtils {
         });
     }
 
-    public static void writeFilefromByteArray(byte[] bytes, Long uuid){
+    public static void writeFilefromByteArray(byte[] bytes, Long uuid, Integer rawid){
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try (FileOutputStream stream = new FileOutputStream(FileUtils.getDataPath(uuid))) {
                 stream.write(Objects.requireNonNull(bytes));
                 stream.flush();
-                Bukkit.getScheduler().runTask(plugin, () -> plugin.getMapDataManager().getMapSet().add(uuid));
+                Bukkit.getScheduler().runTask(plugin, () -> plugin.getMapDataManager().getMapMap().put(uuid, rawid));
             } catch (IOException e) {
                 e.printStackTrace();
             }

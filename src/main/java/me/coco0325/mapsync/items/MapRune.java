@@ -3,11 +3,9 @@ package me.coco0325.mapsync.items;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemDropHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.coco0325.mapsync.utils.MapUtils;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -58,15 +56,16 @@ public class MapRune extends SimpleSlimefunItem<ItemDropHandler> {
             if(item.hasMetadata("no_pickup") || item.hasMetadata("PROCOSMETICS_ITEM")) return;
 
             if (itemStack.getAmount() == 1) {
-                // This lightning is just an effect, it deals no damage.
-                l.getWorld().strikeLightningEffect(l);
 
                 MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
 
-                if(!MapUtils.canCopy(itemStack)) {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSlimefun 4 &7> &e此地圖已被封印"));
+                if(!MapUtils.canCopy(itemStack) || !MapUtils.hasUUID(mapMeta)) {
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSlimefun 4 &7> &e此地圖已被封印或不是跨分流地圖"));
                     return;
                 }
+
+                // This lightning is just an effect, it deals no damage.
+                l.getWorld().strikeLightningEffect(l);
 
                 SlimefunPlugin.runSync(() -> {
                     // Being sure entities are still valid and not picked up or whatsoever.
@@ -78,16 +77,16 @@ public class MapRune extends SimpleSlimefunItem<ItemDropHandler> {
                         item.remove();
                         rune.remove();
 
-                        setLocked(itemStack, true);
+                        MapUtils.switchCopyright(itemStack, p);
                         l.getWorld().dropItemNaturally(l, itemStack);
 
-                        SlimefunPlugin.getLocalization().sendMessage(p, "messages.soulbound-rune.success", true);
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSlimefun 4 &7> &e地圖封印成功!"));
                     } else {
-                        SlimefunPlugin.getLocalization().sendMessage(p, "messages.soulbound-rune.fail", true);
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSlimefun 4 &7> &e地圖封印失敗"));
                     }
                 }, 10L);
             } else {
-                SlimefunPlugin.getLocalization().sendMessage(p, "messages.soulbound-rune.fail", true);
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSlimefun 4 &7> &e地圖封印失敗"));
             }
         }
     }

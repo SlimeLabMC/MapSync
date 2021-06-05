@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.persistence.PersistentDataType;
@@ -25,6 +26,7 @@ public class MapUtils {
     private static final NamespacedKey copyright = new NamespacedKey(plugin, "copy");
     private static final NamespacedKey author = new NamespacedKey(plugin, "author");
     private static final NamespacedKey server = new NamespacedKey(plugin, "server");
+    private static final NamespacedKey rawid = new NamespacedKey(plugin, "rawid");
 
     public static boolean hasUUID(MapMeta map){
         return map.getPersistentDataContainer().has(idkey, PersistentDataType.LONG);
@@ -40,7 +42,6 @@ public class MapUtils {
         for(String text : plugin.MAP_LORE){
             lore.add(ChatColor.translateAlternateColorCodes('&', text.replace("%UUID%", uuid.toString()).replace("%AUTHOR%", player.getName())));
         }
-        lore.add(plugin.COPYRIGHT_DISABLED_LORE);
         meta.setLore(lore);
         meta.getPersistentDataContainer().set(idkey, PersistentDataType.LONG, uuid);
         meta.getPersistentDataContainer().set(copyright, PersistentDataType.BYTE, (byte)0);
@@ -79,17 +80,19 @@ public class MapUtils {
 
     public static void renderMap(ItemStack item) {
         MapMeta mapMeta = (MapMeta) item.getItemMeta();
-        if(isHandled(mapMeta)) return;
+        if(mapMeta.getMapView() == null) return;
         if(hasUUID(mapMeta)){
             Long uuid = getUUID(mapMeta);
             if(plugin.getMapDataManager().isLocal(uuid)){
+                mapMeta.setMapId(plugin.getMapDataManager().getLocalId(uuid));
+                item.setItemMeta(mapMeta);
                 FileUtils.toByteArray(uuid, (bytes) -> Bukkit.getScheduler().runTask(plugin, () -> {
                     try {
                         if(bytes == null) {
-                            plugin.getMapDataManager().getMapSet().remove(uuid);
+                            plugin.getMapDataManager().getMapMap().remove(uuid);
                             renderMap(item);
                         }
-                        plugin.getLogger().log(Level.INFO, "Loaded map from local storage.");
+                        //plugin.getLogger().log(Level.INFO, "Loaded map from local storage.");
                         render(item, bytes);
                         //setMapPixels(bytes, mapMeta.getMapView());
                     } catch (Exception exception) {
@@ -97,9 +100,12 @@ public class MapUtils {
                     }
                 }));
             }else{
-                plugin.getDatabaseManager().fetchMapData(uuid, (bytes) -> Bukkit.getScheduler().runTask(plugin, () -> {
+                int rawid = Bukkit.createMap(Bukkit.getWorlds().get(0)).getId();
+                mapMeta.setMapId(rawid);
+                item.setItemMeta(mapMeta);
+                plugin.getDatabaseManager().fetchMapData(uuid, rawid, (bytes) -> Bukkit.getScheduler().runTask(plugin, () -> {
                     try {
-                        plugin.getLogger().log(Level.INFO, "Downloaded map from database.");
+                        //plugin.getLogger().log(Level.INFO, "Downloaded map from database.");
                         render(item, bytes);
                         //setMapPixels(bytes, mapMeta.getMapView());
                     } catch (Exception exception) {
@@ -132,12 +138,12 @@ public class MapUtils {
             meta.getPersistentDataContainer().set(copyright, PersistentDataType.BYTE, (byte)1);
             item.setItemMeta(meta);
             replaceLore(item, plugin.COPYRIGHT_DISABLED_LORE, plugin.COPYRIGHT_ENABLED_LORE);
-            player.sendMessage(plugin.COPYRIGHT_ENABLED);
+            //player.sendMessage(plugin.COPYRIGHT_ENABLED);
         }else{
             meta.getPersistentDataContainer().set(copyright, PersistentDataType.BYTE, (byte)0);
             item.setItemMeta(meta);
             replaceLore(item, plugin.COPYRIGHT_ENABLED_LORE, plugin.COPYRIGHT_DISABLED_LORE);
-            player.sendMessage(plugin.COPYRIGHT_DISABLED);
+            //player.sendMessage(plugin.COPYRIGHT_DISABLED);
         }
     }
 
@@ -171,8 +177,19 @@ public class MapUtils {
     public static void normalMapRender(ItemStack item){
         MapMeta meta = (MapMeta) item.getItemMeta();
 
-        if(Objects.requireNonNull(item.getItemMeta()).getPersistentDataContainer().has(server, PersistentDataType.STRING)){
-            if(!plugin.getServername().equals(item.getItemMeta().getPersistentDataContainer().get(server, PersistentDataType.STRING))){
+        if(meta.getPersistentDataContainer().has(server, PersistentDataType.STRING)){
+
+            if(plugin.getServername().equals(meta.getPersistentDataContainer().get(server, PersistentDataType.STRING))){
+                if(meta.getPersistentDataContainer().has(rawid, PersistentDataType.INTEGER)){
+                    meta.setMapId(meta.getPersistentDataContainer().get(rawid, PersistentDataType.INTEGER));
+                }else{
+                    meta.getPersistentDataContainer().set(rawid, PersistentDataType.INTEGER, meta.getMapId());
+                }
+            }else{
+                meta.setMapId(0);
+                if(!meta.getPersistentDataContainer().has(rawid, PersistentDataType.INTEGER)){
+                    meta.getPersistentDataContainer().set(rawid, PersistentDataType.INTEGER, 0);
+                }
 
                 for(MapRenderer mapRenderer : meta.getMapView().getRenderers()){
                     meta.getMapView().removeRenderer(mapRenderer);
@@ -181,13 +198,18 @@ public class MapUtils {
                 Objects.requireNonNull(meta.getMapView()).addRenderer(new MapRenderer() {
                     @Override
                     public void render(MapView map, MapCanvas canvas, Player player) {
+                        for(int i=0; i<128; i++){
+                            for(int j=0; j<128; j++){
+                                canvas.setPixel(i, j, MapPalette.TRANSPARENT);
+                            }
+                        }
                     }
                 });
-                item.setItemMeta(meta);
             }
         }else{
             meta.getPersistentDataContainer().set(server, PersistentDataType.STRING, plugin.getServername());
-            item.setItemMeta(meta);
+            meta.getPersistentDataContainer().set(rawid, PersistentDataType.INTEGER, meta.getMapId());
         }
+        item.setItemMeta(meta);
     }
 }

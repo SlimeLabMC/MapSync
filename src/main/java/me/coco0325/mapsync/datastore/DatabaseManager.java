@@ -50,11 +50,11 @@ public class DatabaseManager {
         return source.getConnection();
     }
 
-    public void storeMapData(Long uuid, byte[] data){
+    public void storeMapData(Long uuid, Integer rawid, byte[] data){
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try{
                 byte[] compressed = FileUtils.compress(data);
-                FileUtils.writeFilefromByteArray(compressed, uuid);
+                FileUtils.writeFilefromByteArray(compressed, uuid, rawid);
                 Connection connection = getConnection();
                 PreparedStatement stmt = connection.prepareStatement("INSERT INTO MapSync (uuid, map) VALUES(?, ?)");
                 stmt.setLong(1, uuid);
@@ -67,7 +67,7 @@ public class DatabaseManager {
         });
     }
 
-    public void fetchMapData(Long uuid, Consumer<byte[]> callback){
+    public void fetchMapData(Long uuid, Integer rawid,  Consumer<byte[]> callback){
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 Connection connection = getConnection();
@@ -76,7 +76,7 @@ public class DatabaseManager {
                 ResultSet resultSet = statement.executeQuery();
                 if(resultSet.next()){
                     byte[] rawmap = resultSet.getBytes("map");
-                    if(rawmap != null) FileUtils.writeFilefromByteArray(rawmap, uuid);
+                    if(rawmap != null) FileUtils.writeFilefromByteArray(rawmap, uuid, rawid);
                     callback.accept(FileUtils.decompress(rawmap));
                 }
                 connection.close();

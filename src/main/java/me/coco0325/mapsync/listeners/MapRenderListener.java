@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
@@ -65,4 +66,10 @@ public class MapRenderListener implements Listener {
 
         }
     }
+
+    /*@EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e){
+        initMap(e.getPlayer().getInventory().getItemInMainHand());
+        initMap(e.getPlayer().getInventory().getItemInOffHand());
+    }*/
 }
