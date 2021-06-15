@@ -67,9 +67,10 @@ public class MapRenderListener implements Listener {
         }
     }
 
-    /*@EventHandler
+    @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e){
         initMap(e.getPlayer().getInventory().getItemInMainHand());
         initMap(e.getPlayer().getInventory().getItemInOffHand());
-    }*/
+        e.getPlayer().updateInventory();
+    }
 }

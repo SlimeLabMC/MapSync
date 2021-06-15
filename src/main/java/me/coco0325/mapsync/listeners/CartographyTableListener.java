@@ -37,6 +37,12 @@ public class CartographyTableListener implements Listener {
                 case GLASS_PANE:
                     if(!player.hasPermission("mapsync.use")) return;
 
+                    if(MapUtils.hasUUID(mapMeta)){
+                        e.setCancelled(true);
+                        e.getCurrentItem().setType(Material.AIR);
+                        return;
+                    }
+
                     Long uuid = MapUtils.generateUUID(player);
 
                     ItemStack lockedMap = e.getCurrentItem();
