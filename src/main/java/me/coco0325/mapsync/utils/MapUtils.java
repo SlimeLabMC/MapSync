@@ -134,46 +134,11 @@ public class MapUtils {
         return Class.forName(name);
     }
 
-    public static void switchCopyright(ItemStack item, Player player){
-        ItemMeta meta = item.getItemMeta();
-        if(canCopy(item)){
-            meta.getPersistentDataContainer().set(copyright, PersistentDataType.BYTE, (byte)1);
-            item.setItemMeta(meta);
-            replaceLore(item, plugin.COPYRIGHT_DISABLED_LORE, plugin.COPYRIGHT_ENABLED_LORE);
-            //player.sendMessage(plugin.COPYRIGHT_ENABLED);
-        }else{
-            meta.getPersistentDataContainer().set(copyright, PersistentDataType.BYTE, (byte)0);
-            item.setItemMeta(meta);
-            replaceLore(item, plugin.COPYRIGHT_ENABLED_LORE, plugin.COPYRIGHT_DISABLED_LORE);
-            //player.sendMessage(plugin.COPYRIGHT_DISABLED);
-        }
-    }
-
-    public static void replaceLore(ItemStack item, String toReplace, String ReplaceFor){
-        ItemMeta meta = item.getItemMeta();
-        ArrayList<String> lore = (ArrayList<String>) meta.getLore();
-        for(int i = 0; i< Objects.requireNonNull(lore).size(); i++){
-            if(lore.get(i).equals(toReplace)){
-                lore.set(i, ReplaceFor);
-                meta.setLore(lore);
-                item.setItemMeta(meta);
-                return;
-            }
-        }
-        lore.add(ReplaceFor);
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-    }
-
     public static boolean canCopy(ItemStack item){
         if(Objects.requireNonNull(item.getItemMeta()).getPersistentDataContainer().has(copyright, PersistentDataType.BYTE)){
             return item.getItemMeta().getPersistentDataContainer().get(copyright, PersistentDataType.BYTE) == (byte)0;
         }
         return true;
-    }
-
-    public static String getAuthor(ItemStack item){
-        return Objects.requireNonNull(item.getItemMeta()).getPersistentDataContainer().get(author, PersistentDataType.STRING);
     }
 
     public static void normalMapRender(ItemStack item){

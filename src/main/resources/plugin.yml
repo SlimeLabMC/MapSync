@@ -3,6 +3,5 @@ version: ${project.version}
 main: me.coco0325.mapsync.MapSync
 api-version: 1.16
 authors: [coco0325]
-depend: [Slimefun]
 softdepend: [GriefPrevention]
-description: Sync map items between multiple spigot servers.
+description: Sync map items between multiple servers.

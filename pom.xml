@@ -6,12 +6,12 @@
 
     <groupId>me.coco0325</groupId>
     <artifactId>MapSync</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>MapSync</name>
 
-    <description>Sync map items between multiple spigot servers.</description>
+    <description>Sync map items between multiple servers.</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,6 +26,7 @@
                 <configuration>
                     <source>10</source>
                     <target>10</target>
+                    <outputDirectory>C:/Users/Coco/Documents/JAVA Projects/MapSync</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -85,13 +86,6 @@
             <artifactId>GriefPrevention</artifactId>
             <version>16.17.1</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.TheBusyBiscuit</groupId>
-            <artifactId>Slimefun4</artifactId>
-            <version>4.8</version>
-            <scope>system</scope>
-            <systemPath>C:/Users/Coco/Documents/JAVA Projects/Slimefun/target/Slimefun v4.8.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
