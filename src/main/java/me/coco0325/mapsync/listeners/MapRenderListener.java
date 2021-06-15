@@ -31,31 +31,31 @@ public class MapRenderListener implements Listener {
     }
 
     @EventHandler
-    public void onChunkLoad(ChunkLoadEvent e) {
-        for (Entity entity : e.getChunk().getEntities()) {
-            if (entity instanceof ItemFrame) {
+    public void onChunkLoad(ChunkLoadEvent e){
+        for(Entity entity : e.getChunk().getEntities()){
+            if(entity instanceof ItemFrame){
                 initMap(((ItemFrame) entity).getItem());
             }
         }
     }
 
     @EventHandler
-    public void onPlayerInv(PlayerItemHeldEvent e) {
+    public void onPlayerInv(PlayerItemHeldEvent e){
         ItemStack item = e.getPlayer().getInventory().getItem(e.getNewSlot());
         initMap(item);
     }
 
     @EventHandler
-    public void onPlayerPickup(EntityPickupItemEvent e) {
-        if (!(e.getEntity() instanceof HumanEntity)) {
+    public void onPlayerPickup(EntityPickupItemEvent e){
+        if(!(e.getEntity() instanceof HumanEntity)){
             return;
         }
         initMap(e.getItem().getItemStack());
     }
 
     @EventHandler
-    public void onPlayerInventoryPlace(InventoryClickEvent e) {
-        switch (e.getAction()) {
+    public void onPlayerInventoryPlace(InventoryClickEvent e){
+        switch(e.getAction()){
             case PLACE_ALL:
             case PLACE_ONE:
             case PLACE_SOME:

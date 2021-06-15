@@ -17,7 +17,6 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
 
 public class MapUtils {
 
@@ -72,10 +71,6 @@ public class MapUtils {
             }
         });
         itemStack.setItemMeta(mapMeta);
-    }
-
-    public static boolean isHandled(MapMeta mapMeta){
-        return Objects.requireNonNull(mapMeta.getMapView()).isVirtual();
     }
 
     public static void renderMap(ItemStack item) {

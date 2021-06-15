@@ -12,9 +12,6 @@ mapitem:
     - ""
     - "&7UUID: %UUID%"
     - "&7Author: %AUTHOR%"
-  copyright: # Do not change this section after first use.
-    enabled: "&cUnable to copy"
-    disabled: "&aAble to copy"
 
 message:
   already-sync: "&6[MapSync] &7This map is already synchronized."
