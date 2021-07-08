@@ -16,6 +16,7 @@ import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import org.bukkit.persistence.PersistentDataType;
 
 public class CartographyTableListener implements Listener {
 
@@ -70,12 +71,29 @@ public class CartographyTableListener implements Listener {
                     }catch (Exception exception){
                         exception.printStackTrace();
                     }
+                    break;
                 case MAP:
                     if(plugin.copyright && !MapUtils.canCopy(map)){
                         e.setCancelled(true);
                         e.getCurrentItem().setType(Material.AIR);
                         player.sendMessage(plugin.CANNOT_COPY);
                     }
+                    break;
+                case PAPER:
+                    MapMeta meta = (MapMeta) e.getCurrentItem().getItemMeta();
+                    if(meta.getPersistentDataContainer().has(MapUtils.server, PersistentDataType.STRING)){
+                        if(plugin.getServername().equals(meta.getPersistentDataContainer().get(MapUtils.server, PersistentDataType.STRING)) && meta.getPersistentDataContainer().has(MapUtils.rawid, PersistentDataType.INTEGER)){
+                            meta.getPersistentDataContainer().remove(MapUtils.rawid);
+                        }else{
+                            e.setCancelled(true);
+                            e.getCurrentItem().setType(Material.AIR);
+                        }
+                    }else{
+                        meta.getPersistentDataContainer().set(MapUtils.server, PersistentDataType.STRING, plugin.getServername());
+                    }
+                    e.getCurrentItem().setItemMeta(meta);
+                    break;
+                default:
             }
         }
     }
