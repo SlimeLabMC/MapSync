@@ -24,8 +24,8 @@ public class MapUtils {
     private static final NamespacedKey idkey = new NamespacedKey(plugin, "mapid");
     private static final NamespacedKey copyright = new NamespacedKey(plugin, "copy");
     private static final NamespacedKey author = new NamespacedKey(plugin, "author");
-    private static final NamespacedKey server = new NamespacedKey(plugin, "server");
-    private static final NamespacedKey rawid = new NamespacedKey(plugin, "rawid");
+    public static final NamespacedKey server = new NamespacedKey(plugin, "server");
+    public static final NamespacedKey rawid = new NamespacedKey(plugin, "rawid");
 
     public static boolean hasUUID(MapMeta map){
         return map.getPersistentDataContainer().has(idkey, PersistentDataType.LONG);

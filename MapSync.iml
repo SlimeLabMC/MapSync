@@ -30,14 +30,5 @@
     <orderEntry type="library" name="Maven: com.zaxxer:HikariCP:4.0.3" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:2.0.0-alpha1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.github.TechFortress:GriefPrevention:16.17.1" level="project" />
-    <orderEntry type="module-library">
-      <library name="Maven: com.github.TheBusyBiscuit:Slimefun4:4.8">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../Slimefun/target/Slimefun v4.8.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
   </component>
 </module>
