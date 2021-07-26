@@ -2,6 +2,7 @@ package me.coco0325.mapsync.listeners;
 
 import me.coco0325.mapsync.MapSync;
 import me.coco0325.mapsync.utils.MapUtils;
+import net.craftersland.data.bridge.api.events.SyncCompleteEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
@@ -11,7 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
@@ -55,20 +55,12 @@ public class MapRenderListener implements Listener {
 
     @EventHandler
     public void onPlayerInventoryPlace(InventoryClickEvent e) {
-        switch (e.getAction()) {
-            case PLACE_ALL:
-            case PLACE_ONE:
-            case PLACE_SOME:
-            case SWAP_WITH_CURSOR:
-                initMap(e.getCursor());
-                break;
-            default:
-
-        }
+        initMap(e.getCurrentItem());
+        initMap(e.getCursor());
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e){
+    public void onSyncComplete(SyncCompleteEvent e){
         initMap(e.getPlayer().getInventory().getItemInMainHand());
         initMap(e.getPlayer().getInventory().getItemInOffHand());
         e.getPlayer().updateInventory();

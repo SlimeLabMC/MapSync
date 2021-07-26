@@ -42,6 +42,10 @@ public class CartographyTableListener implements Listener {
                         e.setCancelled(true);
                         e.getCurrentItem().setType(Material.AIR);
                         return;
+                    }else if(mapMeta.getPersistentDataContainer().has(MapUtils.server, PersistentDataType.STRING) &&!plugin.getServername().equals(mapMeta.getPersistentDataContainer().get(MapUtils.server, PersistentDataType.STRING))){
+                        e.setCancelled(true);
+                        e.getCurrentItem().setType(Material.AIR);
+                        return;
                     }
 
                     Long uuid = MapUtils.generateUUID(player);

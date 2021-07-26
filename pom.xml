@@ -93,5 +93,12 @@
             <scope>system</scope>
             <systemPath>C:/Users/Coco/Documents/JAVA Projects/Slimefun/target/Slimefun v4.8.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>net.craftersland</groupId>
+            <artifactId>MysqlPlayerDataBridge</artifactId>
+            <version>3.36.1</version>
+            <systemPath>${project.basedir}/lib/MysqlPlayerDataBridge-v3.36.1.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
     </dependencies>
 </project>
