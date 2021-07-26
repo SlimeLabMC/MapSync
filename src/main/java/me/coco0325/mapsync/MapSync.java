@@ -3,9 +3,7 @@ package me.coco0325.mapsync;
 import me.coco0325.mapsync.datastore.DatabaseManager;
 import me.coco0325.mapsync.datastore.MapDataManager;
 import me.coco0325.mapsync.hook.GriefPreventionHook;
-import me.coco0325.mapsync.listeners.CartographyTableListener;
-import me.coco0325.mapsync.listeners.MapInitListener;
-import me.coco0325.mapsync.listeners.MapRenderListener;
+import me.coco0325.mapsync.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -79,6 +77,12 @@ public final class MapSync extends JavaPlugin{
 
         databaseManager = new DatabaseManager(this);
         mapDataManager = new MapDataManager(this);
+
+        if(Bukkit.getPluginManager().isPluginEnabled("MysqlPlayerDataBridge")){
+            Bukkit.getPluginManager().registerEvents(new SyncCompleteListener(), this);
+        }else{
+            Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        }
 
         Bukkit.getPluginManager().registerEvents(new CartographyTableListener(this), this);
 

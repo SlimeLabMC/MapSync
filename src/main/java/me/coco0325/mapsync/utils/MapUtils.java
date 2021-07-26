@@ -3,6 +3,7 @@ package me.coco0325.mapsync.utils;
 import me.coco0325.mapsync.MapSync;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -26,6 +27,12 @@ public class MapUtils {
     private static final NamespacedKey author = new NamespacedKey(plugin, "author");
     public static final NamespacedKey server = new NamespacedKey(plugin, "server");
     public static final NamespacedKey rawid = new NamespacedKey(plugin, "rawid");
+
+    public static void initMap(ItemStack item){
+        if(item != null && item.getType() == Material.FILLED_MAP && item.getItemMeta() instanceof MapMeta){
+            MapUtils.renderMap(item);
+        }
+    }
 
     public static boolean hasUUID(MapMeta map){
         return map.getPersistentDataContainer().has(idkey, PersistentDataType.LONG);

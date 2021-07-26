@@ -3,7 +3,7 @@ version: ${project.version}
 main: me.coco0325.mapsync.MapSync
 api-version: 1.16
 authors: [coco0325]
-softdepend: [GriefPrevention]
+softdepend: [GriefPrevention, MysqlPlayerDataBridge]
 description: Sync map items between multiple servers.
 
 permissions:

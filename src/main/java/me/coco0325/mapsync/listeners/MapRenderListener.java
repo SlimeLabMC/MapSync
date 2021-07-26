@@ -24,17 +24,11 @@ public class MapRenderListener implements Listener {
         this.plugin = plugin;
     }
 
-    public void initMap(ItemStack item){
-        if(item != null && item.getType() == Material.FILLED_MAP && item.getItemMeta() instanceof MapMeta){
-            MapUtils.renderMap(item);
-        }
-    }
-
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent e){
         for(Entity entity : e.getChunk().getEntities()){
             if(entity instanceof ItemFrame){
-                initMap(((ItemFrame) entity).getItem());
+                MapUtils.initMap(((ItemFrame) entity).getItem());
             }
         }
     }
@@ -42,7 +36,7 @@ public class MapRenderListener implements Listener {
     @EventHandler
     public void onPlayerInv(PlayerItemHeldEvent e){
         ItemStack item = e.getPlayer().getInventory().getItem(e.getNewSlot());
-        initMap(item);
+        MapUtils.initMap(item);
     }
 
     @EventHandler
@@ -50,27 +44,12 @@ public class MapRenderListener implements Listener {
         if(!(e.getEntity() instanceof HumanEntity)){
             return;
         }
-        initMap(e.getItem().getItemStack());
+        MapUtils.initMap(e.getItem().getItemStack());
     }
 
     @EventHandler
     public void onPlayerInventoryPlace(InventoryClickEvent e){
-        switch(e.getAction()){
-            case PLACE_ALL:
-            case PLACE_ONE:
-            case PLACE_SOME:
-            case SWAP_WITH_CURSOR:
-                initMap(e.getCursor());
-                break;
-            default:
-
-        }
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e){
-        initMap(e.getPlayer().getInventory().getItemInMainHand());
-        initMap(e.getPlayer().getInventory().getItemInOffHand());
-        e.getPlayer().updateInventory();
+        MapUtils.initMap(e.getCurrentItem());
+        MapUtils.initMap(e.getCursor());
     }
 }

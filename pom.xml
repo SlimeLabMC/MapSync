@@ -87,5 +87,12 @@
             <version>16.17.1</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.craftersland</groupId>
+            <artifactId>MysqlPlayerDataBridge</artifactId>
+            <version>3.36.1</version>
+            <systemPath>${project.basedir}/lib/MysqlPlayerDataBridge-v3.36.1.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
     </dependencies>
 </project>
