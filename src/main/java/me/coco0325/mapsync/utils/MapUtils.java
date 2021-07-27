@@ -14,6 +14,7 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
@@ -125,7 +126,7 @@ public class MapUtils {
         Object craftworld = getCBTClass().cast(Bukkit.getServer().getWorlds().get(0));
         Object world = craftworld.getClass().getMethod("getHandle").invoke(craftworld);
         Object worldmap = world.getClass().getDeclaredMethod("a", String.class).invoke(world, s);
-        return (byte[]) worldmap.getClass().getDeclaredField("colors").get(worldmap);
+        return (byte[]) worldmap.getClass().getDeclaredField(plugin.colors_field).get(worldmap);
     }
 
     private static Class<?> getCBTClass() throws ClassNotFoundException {
