@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.logging.Level;
 
 public final class MapSync extends JavaPlugin{
 
@@ -33,6 +34,7 @@ public final class MapSync extends JavaPlugin{
     public String servername;
     public boolean copyright;
     public static MapSync instance;
+    public String colors_field;
 
     @Override
     public void onEnable() {
@@ -51,13 +53,21 @@ public final class MapSync extends JavaPlugin{
     }
 
     public void setup() {
+        if(Bukkit.getVersion().contains("1.16")){
+            colors_field = "colors";
+        }else if(Bukkit.getVersion().contains("1.17")){
+            colors_field = "g";
+        }else{
+            this.getLogger().log(Level.SEVERE, "Wrong Minecraft Version! Now only support 1.16 and 1.17");
+            this.getPluginLoader().disablePlugin(this);
+        }
 
         try{
             Properties props = new Properties();
             props.load(new FileInputStream(this.getServer().getWorldContainer().getAbsolutePath() + File.separator + "server.properties"));
             servername = props.getProperty("server-name");
         }catch (Exception e){
-            e.printStackTrace();
+            this.getLogger().log(Level.SEVERE, "Please create a section call \"server-name\" in server.properties and give your server a unique name.");
             this.getPluginLoader().disablePlugin(this);
         }
 
