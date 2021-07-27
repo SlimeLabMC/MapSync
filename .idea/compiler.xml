@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="MapSync" target="10" />
+      <module name="MapSync" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

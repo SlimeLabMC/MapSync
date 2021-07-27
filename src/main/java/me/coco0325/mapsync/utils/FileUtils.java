@@ -17,14 +17,17 @@ public class FileUtils {
 
     public static byte[] compress(byte[] bytes){
         try{
-            ByteArrayOutputStream byteStream = new ByteArrayOutputStream(bytes.length);
-            try (byteStream) {
+            ByteArrayOutputStream byteStream;
+            try {
+                byteStream = new ByteArrayOutputStream(bytes.length);
                 try (GZIPOutputStream zipStream = new GZIPOutputStream(byteStream)) {
                     zipStream.write(bytes);
                 }
+                return byteStream.toByteArray();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
             }
-
-            return byteStream.toByteArray();
         }
         catch(Exception e) {
             e.printStackTrace();
