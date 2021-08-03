@@ -26,6 +26,7 @@ public class MapRenderListener implements Listener {
 
     public void initMap(ItemStack item){
         if(item != null && item.getType() == Material.FILLED_MAP && item.getItemMeta() instanceof MapMeta){
+            //plugin.getLogger().log(Level.INFO, "initMap");
             MapUtils.renderMap(item);
         }
     }

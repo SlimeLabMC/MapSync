@@ -55,8 +55,7 @@ public class MapUtils {
     }
 
     public static void render(ItemStack itemStack, byte[] bytes){
-        if(!(itemStack.getItemMeta() instanceof MapMeta)) return;
-        MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
+        if(!(itemStack.getItemMeta() instanceof MapMeta mapMeta)) return;
 
         for(MapRenderer mapRenderer : mapMeta.getMapView().getRenderers()){
             mapMeta.getMapView().removeRenderer(mapRenderer);
@@ -81,12 +80,12 @@ public class MapUtils {
 
     public static void renderMap(ItemStack item) {
         MapMeta mapMeta = (MapMeta) item.getItemMeta();
-        if(mapMeta.getMapView() == null) return;
+        //if(mapMeta.getMapView() == null) return;
         if(hasUUID(mapMeta)){
             Long uuid = getUUID(mapMeta);
             if(plugin.getMapDataManager().isLocal(uuid)){
                 mapMeta.setMapId(plugin.getMapDataManager().getLocalId(uuid));
-                mapMeta.getMapView().setLocked(true);
+                Objects.requireNonNull(mapMeta.getMapView()).setLocked(true);
                 item.setItemMeta(mapMeta);
                 FileUtils.toByteArray(uuid, (bytes) -> Bukkit.getScheduler().runTask(plugin, () -> {
                     try {
@@ -117,6 +116,7 @@ public class MapUtils {
                 }));
             }
         }else{
+            //plugin.getLogger().log(Level.INFO, "normal");
             normalMapRender(item);
         }
     }
