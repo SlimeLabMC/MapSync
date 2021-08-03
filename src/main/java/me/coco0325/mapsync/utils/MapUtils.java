@@ -82,12 +82,11 @@ public class MapUtils {
 
     public static void renderMap(ItemStack item) {
         MapMeta mapMeta = (MapMeta) item.getItemMeta();
-        if(mapMeta.getMapView() == null) return;
         if(hasUUID(mapMeta)){
             Long uuid = getUUID(mapMeta);
             if(plugin.getMapDataManager().isLocal(uuid)){
                 mapMeta.setMapId(plugin.getMapDataManager().getLocalId(uuid));
-                mapMeta.getMapView().setLocked(true);
+                Objects.requireNonNull(mapMeta.getMapView()).setLocked(true);
                 item.setItemMeta(mapMeta);
                 FileUtils.toByteArray(uuid, (bytes) -> Bukkit.getScheduler().runTask(plugin, () -> {
                     try {
@@ -105,7 +104,7 @@ public class MapUtils {
             }else{
                 int rawid = Bukkit.createMap(Bukkit.getWorlds().get(0)).getId();
                 mapMeta.setMapId(rawid);
-                mapMeta.getMapView().setLocked(true);
+                Objects.requireNonNull(mapMeta.getMapView()).setLocked(true);
                 item.setItemMeta(mapMeta);
                 plugin.getDatabaseManager().fetchMapData(uuid, rawid, (bytes) -> Bukkit.getScheduler().runTask(plugin, () -> {
                     try {
