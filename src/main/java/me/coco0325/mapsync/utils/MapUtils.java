@@ -14,11 +14,9 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
 
 public class MapUtils {
 
@@ -101,8 +99,11 @@ public class MapUtils {
                     }
                 }));
             }else{
-                int rawid = Bukkit.createMap(Bukkit.getWorlds().get(0)).getId();
-                mapMeta.setMapId(rawid);
+                //int rawid = Bukkit.createMap(Bukkit.getWorlds().get(0)).getId();
+                MapView mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
+                int rawid = mapView.getId();
+                mapMeta.setMapView(mapView);
+                //mapMeta.setMapId(rawid);
                 mapMeta.getMapView().setLocked(true);
                 item.setItemMeta(mapMeta);
                 plugin.getDatabaseManager().fetchMapData(uuid, rawid, (bytes) -> Bukkit.getScheduler().runTask(plugin, () -> {

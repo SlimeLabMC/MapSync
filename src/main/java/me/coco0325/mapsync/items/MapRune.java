@@ -92,8 +92,7 @@ public class MapRune extends SimpleSlimefunItem<ItemDropHandler> {
     }
 
     private boolean findCompatibleItem(Entity entity) {
-        if (entity instanceof Item) {
-            Item item = (Item) entity;
+        if (entity instanceof Item item) {
 
             return item.getItemStack().getType() == Material.FILLED_MAP;
         }
