@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 
 public class DatabaseManager {
     
@@ -30,8 +31,9 @@ public class DatabaseManager {
         String password = DBFile.getString("password");
         int minsize = DBFile.getInt("min_size");
         int maxsize = DBFile.getInt("max_size");
-        boolean SSL = DBFile.getBoolean("use_SSL");
-        String jdbc = "jdbc:mysql://" + host + ":" + port + "/" + database + "?" + "useSSL=" + SSL;
+        String parameters = DBFile.getString("parameters");
+        String jdbc = "jdbc:mysql://" + host + ":" + port + "/" + database;
+        if(parameters != null) jdbc +=  "?" + parameters;
         config.setJdbcUrl(jdbc);
         config.setMaximumPoolSize(maxsize);
         config.setMinimumIdle(minsize);
@@ -39,11 +41,10 @@ public class DatabaseManager {
         config.setPassword(password);
 
         source = new HikariDataSource(config);
+
         try {
             source.setLoginTimeout(5);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        }catch (Exception ignored){}
     }
 
     public Connection getConnection() throws SQLException {
@@ -62,6 +63,7 @@ public class DatabaseManager {
                 stmt.execute();
                 connection.close();
             }catch (Exception e){
+                plugin.getLogger().log(Level.WARNING, "Unable to insert data into the database.");
                 e.printStackTrace();
             }
         });
@@ -82,6 +84,7 @@ public class DatabaseManager {
                 connection.close();
             } catch (SQLException throwables) {
                 callback.accept(null);
+                plugin.getLogger().log(Level.WARNING, "Unable to fetch data from the database.");
                 throwables.printStackTrace();
 
             }

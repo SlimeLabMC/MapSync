@@ -11,8 +11,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -48,6 +49,7 @@ public final class MapSync extends JavaPlugin{
         try {
             saveAll();
         } catch (IOException e) {
+            this.getLogger().log(Level.SEVERE, "Something went wrong when disabling MapSync.");
             e.printStackTrace();
         }
     }
@@ -64,16 +66,23 @@ public final class MapSync extends JavaPlugin{
 
         try{
             Properties props = new Properties();
-            props.load(new FileInputStream(this.getServer().getWorldContainer().getAbsolutePath() + File.separator + "server.properties"));
+            props.load(new FileReader(Paths.get("server.properties").toFile()));
             servername = props.getProperty("server-name");
         }catch (Exception e){
             this.getLogger().log(Level.SEVERE, "Please create a section call \"server-name\" in server.properties and give your server a unique name.");
             this.getPluginLoader().disablePlugin(this);
         }
 
-        saveResource("config.yml", false);
-        saveResource("database.yml", false);
-        saveResource("mapdata.yml", false);
+        if(!new File(this.getDataFolder(), "config.yml").exists()){
+            saveResource("config.yml", false);
+        }
+        if(!new File(this.getDataFolder(), "database.yml").exists()){
+            saveResource("database.yml", false);
+        }
+        if(!new File(this.getDataFolder(), "mapdata.yml").exists()){
+            saveResource("mapdata.yml", false);
+        }
+
         File datafolder = new File(getDataFolder(), "data");
         if(!datafolder.exists()) datafolder.mkdirs();
 
@@ -85,11 +94,18 @@ public final class MapSync extends JavaPlugin{
         SUCCESS_SYNC = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.success-sync"));
         NO_PERMISSION = ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.no-permission"));
 
-        databaseManager = new DatabaseManager(this);
+        try{
+            databaseManager = new DatabaseManager(this);
+        }catch (Exception e){
+            this.getPluginLoader().disablePlugin(this);
+            this.getLogger().log(Level.SEVERE, "Unable to connect to MYSQL database. Please check if database.yml contains the correct database information.");
+        }
+
         mapDataManager = new MapDataManager(this);
 
         if(Bukkit.getPluginManager().isPluginEnabled("MysqlPlayerDataBridge")){
             Bukkit.getPluginManager().registerEvents(new SyncCompleteListener(), this);
+            this.getLogger().log(Level.INFO, "MysqlPlayerDataBridge detected.");
         }else{
             Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(), this);
         }
@@ -100,6 +116,7 @@ public final class MapSync extends JavaPlugin{
 
         if(getConfig().getBoolean("hooks.griefprevention") && getServer().getPluginManager().isPluginEnabled("GriefPrevention")){
             griefPreventionHook = new GriefPreventionHook();
+            this.getLogger().log(Level.INFO, "Hooked into GriefPrevention");
             Bukkit.getPluginManager().registerEvents(new MapInitListener(this), this);
         }
     }
@@ -117,6 +134,7 @@ public final class MapSync extends JavaPlugin{
                     "uuid BIGINT, map BLOB, primary key(uuid))");
             connection.close();
         } catch (SQLException e) {
+            this.getLogger().log(Level.WARNING, "Unable to create table. Please check if database.yml contains the correct database information.");
             e.printStackTrace();
         }
     }

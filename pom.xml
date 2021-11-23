@@ -6,7 +6,7 @@
 
     <groupId>me.coco0325</groupId>
     <artifactId>MapSync</artifactId>
-    <version>0.1</version>
+    <version>0.7</version>
     <packaging>jar</packaging>
 
     <name>MapSync</name>

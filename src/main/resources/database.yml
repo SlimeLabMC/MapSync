@@ -5,5 +5,8 @@ host: localhost
 port: 3306
 username: root
 password: password
+
+# Only modify the following sections when you know what you are doing.
 min_size: 2
 max_size: 10
+parameters: "useSSL=false"
