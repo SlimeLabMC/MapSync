@@ -53,8 +53,9 @@ public class CartographyTableListener implements Listener {
                     ItemStack lockedMap = e.getCurrentItem();
                     MapMeta lockedMapMeta = (MapMeta) lockedMap.getItemMeta();
 
-                    int rawid = Bukkit.createMap(Bukkit.getWorlds().get(0)).getId();
-                    lockedMapMeta.setMapId(rawid);
+                    MapView mapView1 = Bukkit.createMap(Bukkit.getWorlds().get(0));
+                    int rawid = mapView1.getId();
+                    lockedMapMeta.setMapView(mapView1);
 
                     lockedMapMeta.getMapView().addRenderer(new MapRenderer() {
                         @Override

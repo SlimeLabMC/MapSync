@@ -102,8 +102,9 @@ public class MapUtils {
                     }
                 }));
             }else{
-                int rawid = Bukkit.createMap(Bukkit.getWorlds().get(0)).getId();
-                mapMeta.setMapId(rawid);
+                MapView mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
+                int rawid = mapView.getId();
+                mapMeta.setMapView(mapView);
                 Objects.requireNonNull(mapMeta.getMapView()).setLocked(true);
                 item.setItemMeta(mapMeta);
                 plugin.getDatabaseManager().fetchMapData(uuid, rawid, (bytes) -> Bukkit.getScheduler().runTask(plugin, () -> {

@@ -2,6 +2,7 @@ package me.coco0325.mapsync.listeners;
 
 import me.coco0325.mapsync.MapSync;
 import me.coco0325.mapsync.utils.MapUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.ItemFrame;
@@ -23,11 +24,13 @@ public class MapRenderListener implements Listener {
 
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent e){
-        for(Entity entity : e.getChunk().getEntities()){
-            if(entity instanceof ItemFrame){
-                MapUtils.initMap(((ItemFrame) entity).getItem());
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            for(Entity entity : e.getChunk().getEntities()){
+                if(entity instanceof ItemFrame){
+                    MapUtils.initMap(((ItemFrame) entity).getItem());
+                }
             }
-        }
+        }, 5L);
     }
 
     @EventHandler
