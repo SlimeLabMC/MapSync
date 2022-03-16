@@ -46,8 +46,9 @@ public class MapRune extends SimpleSlimefunItem<ItemDropHandler> {
         }
 
         Location l = rune.getLocation();
-        Collection<Entity> entites = l.getWorld().getNearbyEntities(l, RANGE, RANGE, RANGE, this::findCompatibleItem);
-        Optional<Entity> optional = entites.stream().findFirst();
+        Collection<Entity> entites_raw = l.getWorld().getNearbyEntities(l, RANGE, RANGE, RANGE);
+        if(entites_raw.stream().anyMatch(this::isMultipleMapRune)) return;
+        Optional<Entity> optional = entites_raw.stream().filter(this::findCompatibleItem).findFirst();
 
         if (optional.isPresent()) {
             Item item = (Item) optional.get();
@@ -95,6 +96,13 @@ public class MapRune extends SimpleSlimefunItem<ItemDropHandler> {
         if (entity instanceof Item item) {
 
             return item.getItemStack().getType() == Material.FILLED_MAP;
+        }
+        return false;
+    }
+
+    private boolean isMultipleMapRune(Entity entity){
+        if(entity instanceof Item item){
+            return isItem(item.getItemStack()) && item.getItemStack().getAmount() > 1;
         }
         return false;
     }
