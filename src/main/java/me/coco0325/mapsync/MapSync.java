@@ -35,7 +35,7 @@ public final class MapSync extends JavaPlugin{
     public String servername;
     public boolean copyright;
     public static MapSync instance;
-    public String colors_field;
+    public String colors_field, getMapFunctionName; // For reflection
 
     @Override
     public void onEnable() {
@@ -56,11 +56,16 @@ public final class MapSync extends JavaPlugin{
 
     public void setup() {
         if(Bukkit.getVersion().contains("1.16")){
+            getMapFunctionName = "a";
             colors_field = "colors";
         }else if(Bukkit.getVersion().contains("1.17")){
+            getMapFunctionName = "a";
             colors_field = "g";
+        }else if(Bukkit.getVersion().contains("1.18")){
+            getMapFunctionName = "getMapData";
+            colors_field = "colors";
         }else{
-            this.getLogger().log(Level.SEVERE, "Wrong Minecraft Version! Now only support 1.16 and 1.17");
+            this.getLogger().log(Level.SEVERE, "Wrong Minecraft Version! Now only support 1.16 to 1.18");
             this.getPluginLoader().disablePlugin(this);
         }
 
