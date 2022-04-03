@@ -126,7 +126,7 @@ public class MapUtils {
         String s = "map_" + view.getId();
         Object craftworld = getCBTClass().cast(Bukkit.getServer().getWorlds().get(0));
         Object world = craftworld.getClass().getMethod("getHandle").invoke(craftworld);
-        Object worldmap = world.getClass().getDeclaredMethod("a", String.class).invoke(world, s);
+        Object worldmap = world.getClass().getDeclaredMethod(plugin.getMapFunctionName, String.class).invoke(world, s);
         return (byte[]) worldmap.getClass().getDeclaredField(plugin.colors_field).get(worldmap);
     }
 
