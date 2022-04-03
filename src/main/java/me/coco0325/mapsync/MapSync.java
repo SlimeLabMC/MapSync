@@ -62,8 +62,8 @@ public final class MapSync extends JavaPlugin{
             getMapFunctionName = "a";
             colors_field = "g";
         }else if(Bukkit.getVersion().contains("1.18")){
-            getMapFunctionName = "getMapData";
-            colors_field = "colors";
+            getMapFunctionName = "a";
+            colors_field = "g";
         }else{
             this.getLogger().log(Level.SEVERE, "Wrong Minecraft Version! Now only support 1.16 to 1.18");
             this.getPluginLoader().disablePlugin(this);
