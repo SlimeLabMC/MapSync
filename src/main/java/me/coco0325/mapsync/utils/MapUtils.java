@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -17,6 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MapUtils {
@@ -27,12 +29,6 @@ public class MapUtils {
     private static final NamespacedKey author = new NamespacedKey(plugin, "author");
     public static final NamespacedKey server = new NamespacedKey(plugin, "server");
     public static final NamespacedKey rawid = new NamespacedKey(plugin, "rawid");
-
-    public static void initMap(ItemStack item){
-        if(item != null && item.getType() == Material.FILLED_MAP && item.getItemMeta() instanceof MapMeta){
-            MapUtils.renderMap(item);
-        }
-    }
 
     public static boolean hasUUID(MapMeta map){
         return map.getPersistentDataContainer().has(idkey, PersistentDataType.LONG);
@@ -59,8 +55,8 @@ public class MapUtils {
         return (System.currentTimeMillis() / 10) * 1000000 + (player.getUniqueId().hashCode() % 1000) * 1000 + ThreadLocalRandom.current().nextInt(0, 1000);
     }
 
-    public static void render(ItemStack itemStack, byte[] bytes){
-        if(!(itemStack.getItemMeta() instanceof MapMeta)) return;
+    public static ItemStack render(ItemStack itemStack, byte[] bytes){
+        if(!(itemStack.getItemMeta() instanceof MapMeta)) return itemStack;
         MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
 
         for(MapRenderer mapRenderer : mapMeta.getMapView().getRenderers()){
@@ -78,11 +74,25 @@ public class MapUtils {
             }
         });
         itemStack.setItemMeta(mapMeta);
+        return itemStack;
     }
 
-    public static void renderMap(ItemStack item) {
+    public static boolean isHandled(MapMeta mapMeta){
+        return Objects.requireNonNull(mapMeta.getMapView()).isVirtual();
+    }
+
+    public static void renderMap(ItemStack item, Optional<ItemFrame> itemFrame) {
+
+        if(item == null || item.getType() != Material.FILLED_MAP || !(item.getItemMeta() instanceof MapMeta)) return;
+
         MapMeta mapMeta = (MapMeta) item.getItemMeta();
+
+        //if(mapMeta.getMapView() == null) return;
+
         if(hasUUID(mapMeta)){
+
+            itemFrame.ifPresent(frame -> frame.setFixed(true));
+
             Long uuid = getUUID(mapMeta);
             if(plugin.getMapDataManager().isLocal(uuid)){
                 mapMeta.setMapId(plugin.getMapDataManager().getLocalId(uuid));
@@ -92,13 +102,18 @@ public class MapUtils {
                     try {
                         if(bytes == null) {
                             plugin.getMapDataManager().getMapMap().remove(uuid);
-                            renderMap(item);
+                            renderMap(item, itemFrame);
                         }
                         //plugin.getLogger().log(Level.INFO, "Loaded map from local storage.");
-                        render(item, bytes);
+                        ItemStack rendered = render(item, bytes).clone();
+                        itemFrame.ifPresent(frame -> Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                            frame.setItem(rendered);
+                            frame.setFixed(false);
+                        }, 5L));
                         //setMapPixels(bytes, mapMeta.getMapView());
                     } catch (Exception exception) {
                         exception.printStackTrace();
+                        itemFrame.ifPresent(frame -> frame.setFixed(false));
                     }
                 }));
             }else{
@@ -110,10 +125,15 @@ public class MapUtils {
                 plugin.getDatabaseManager().fetchMapData(uuid, rawid, (bytes) -> Bukkit.getScheduler().runTask(plugin, () -> {
                     try {
                         //plugin.getLogger().log(Level.INFO, "Downloaded map from database.");
-                        render(item, bytes);
+                        ItemStack rendered = render(item, bytes).clone();
+                        itemFrame.ifPresent(frame -> Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                            frame.setItem(rendered);
+                            frame.setFixed(false);
+                        }, 5L));
                         //setMapPixels(bytes, mapMeta.getMapView());
                     } catch (Exception exception) {
                         exception.printStackTrace();
+                        itemFrame.ifPresent(frame -> frame.setFixed(false));
                     }
                 }));
             }

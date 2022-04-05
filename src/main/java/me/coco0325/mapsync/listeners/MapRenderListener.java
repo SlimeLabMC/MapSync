@@ -14,6 +14,8 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Optional;
+
 public class MapRenderListener implements Listener {
 
     MapSync plugin;
@@ -25,9 +27,9 @@ public class MapRenderListener implements Listener {
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent e){
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            for(Entity entity : e.getChunk().getEntities()){
-                if(entity instanceof ItemFrame){
-                    MapUtils.initMap(((ItemFrame) entity).getItem());
+            for (Entity entity : e.getChunk().getEntities()) {
+                if (entity instanceof ItemFrame) {
+                    MapUtils.renderMap(((ItemFrame) entity).getItem(), Optional.of(((ItemFrame) entity)));
                 }
             }
         }, 5L);
@@ -36,7 +38,7 @@ public class MapRenderListener implements Listener {
     @EventHandler
     public void onPlayerInv(PlayerItemHeldEvent e){
         ItemStack item = e.getPlayer().getInventory().getItem(e.getNewSlot());
-        MapUtils.initMap(item);
+        MapUtils.renderMap(item, Optional.empty());
     }
 
     @EventHandler
@@ -44,12 +46,13 @@ public class MapRenderListener implements Listener {
         if(!(e.getEntity() instanceof HumanEntity)){
             return;
         }
-        MapUtils.initMap(e.getItem().getItemStack());
+        MapUtils.renderMap(e.getItem().getItemStack(), Optional.empty());
     }
 
     @EventHandler
-    public void onPlayerInventoryPlace(InventoryClickEvent e){
-        MapUtils.initMap(e.getCurrentItem());
-        MapUtils.initMap(e.getCursor());
+    public void onPlayerInventoryPlace(InventoryClickEvent e) {
+        MapUtils.renderMap(e.getCurrentItem(), Optional.empty());
+        MapUtils.renderMap(e.getCursor(), Optional.empty());
     }
+
 }

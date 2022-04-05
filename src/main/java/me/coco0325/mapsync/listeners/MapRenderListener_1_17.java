@@ -9,6 +9,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.EntitiesLoadEvent;
 
+import java.util.Optional;
+
 public class MapRenderListener_1_17 implements Listener {
 
     MapSync plugin;
@@ -20,11 +22,12 @@ public class MapRenderListener_1_17 implements Listener {
     @EventHandler
     public void onEntitiesLoad(EntitiesLoadEvent e){
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            for(Entity entity : e.getEntities()){
-                if(entity instanceof ItemFrame){
-                    MapUtils.initMap(((ItemFrame) entity).getItem());
+            for (Entity entity : e.getEntities()) {
+                if (entity instanceof ItemFrame) {
+                    MapUtils.renderMap(((ItemFrame) entity).getItem(), Optional.of(((ItemFrame) entity)));
                 }
             }
         }, 5L);
     }
+
 }
