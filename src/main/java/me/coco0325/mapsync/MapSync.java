@@ -8,10 +8,7 @@ import me.coco0325.mapsync.datastore.DatabaseManager;
 import me.coco0325.mapsync.datastore.MapDataManager;
 import me.coco0325.mapsync.hook.GriefPreventionHook;
 import me.coco0325.mapsync.items.MapRune;
-import me.coco0325.mapsync.listeners.CartographyTableListener;
-import me.coco0325.mapsync.listeners.CraftingCopyListener;
-import me.coco0325.mapsync.listeners.MapInitListener;
-import me.coco0325.mapsync.listeners.MapRenderListener;
+import me.coco0325.mapsync.listeners.*;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
@@ -70,12 +67,10 @@ public final class MapSync extends JavaPlugin implements SlimefunAddon {
         if(Bukkit.getVersion().contains("1.16")){
             getMapFunctionName = "a";
             colors_field = "colors";
-        }else if(Bukkit.getVersion().contains("1.17")){
+        }else if(Bukkit.getVersion().contains("1.17") || Bukkit.getVersion().contains("1.18")){
             getMapFunctionName = "a";
             colors_field = "g";
-        }else if(Bukkit.getVersion().contains("1.18")){
-            getMapFunctionName = "a";
-            colors_field = "g";
+            Bukkit.getPluginManager().registerEvents(new MapRenderListener_1_17(this), this);
         }else{
             this.getLogger().log(Level.SEVERE, "Wrong Minecraft Version! Now only support 1.16 to 1.18");
             this.getPluginLoader().disablePlugin(this);

@@ -17,6 +17,8 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
 
+import java.util.Optional;
+
 public class MapRenderListener implements Listener {
 
     MapSync plugin;
@@ -25,19 +27,12 @@ public class MapRenderListener implements Listener {
         this.plugin = plugin;
     }
 
-    public void initMap(ItemStack item){
-        if(item != null && item.getType() == Material.FILLED_MAP && item.getItemMeta() instanceof MapMeta){
-            //plugin.getLogger().log(Level.INFO, "initMap");
-            MapUtils.renderMap(item);
-        }
-    }
-
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent e) {
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             for (Entity entity : e.getChunk().getEntities()) {
                 if (entity instanceof ItemFrame) {
-                    initMap(((ItemFrame) entity).getItem());
+                    MapUtils.renderMap(((ItemFrame) entity).getItem(), Optional.of(((ItemFrame) entity)));
                 }
             }
         }, 5L);
@@ -47,7 +42,7 @@ public class MapRenderListener implements Listener {
     @EventHandler
     public void onPlayerInv(PlayerItemHeldEvent e) {
         ItemStack item = e.getPlayer().getInventory().getItem(e.getNewSlot());
-        initMap(item);
+        MapUtils.renderMap(item, Optional.empty());
     }
 
     @EventHandler
@@ -55,19 +50,19 @@ public class MapRenderListener implements Listener {
         if (!(e.getEntity() instanceof HumanEntity)) {
             return;
         }
-        initMap(e.getItem().getItemStack());
+        MapUtils.renderMap(e.getItem().getItemStack(), Optional.empty());
     }
 
     @EventHandler
     public void onPlayerInventoryPlace(InventoryClickEvent e) {
-        initMap(e.getCurrentItem());
-        initMap(e.getCursor());
+        MapUtils.renderMap(e.getCurrentItem(), Optional.empty());
+        MapUtils.renderMap(e.getCursor(), Optional.empty());
     }
 
     @EventHandler
     public void onSyncComplete(SyncCompleteEvent e){
-        initMap(e.getPlayer().getInventory().getItemInMainHand());
-        initMap(e.getPlayer().getInventory().getItemInOffHand());
+        MapUtils.renderMap(e.getPlayer().getInventory().getItemInMainHand(), Optional.empty());
+        MapUtils.renderMap(e.getPlayer().getInventory().getItemInOffHand(), Optional.empty());
         e.getPlayer().updateInventory();
     }
 }
