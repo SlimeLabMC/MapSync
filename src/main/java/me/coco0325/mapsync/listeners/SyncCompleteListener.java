@@ -5,12 +5,14 @@ import net.craftersland.data.bridge.api.events.SyncCompleteEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.Optional;
+
 public class SyncCompleteListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(SyncCompleteEvent e){
-        MapUtils.initMap(e.getPlayer().getInventory().getItemInMainHand());
-        MapUtils.initMap(e.getPlayer().getInventory().getItemInOffHand());
+        MapUtils.renderMap(e.getPlayer().getInventory().getItemInMainHand(), Optional.empty());
+        MapUtils.renderMap(e.getPlayer().getInventory().getItemInOffHand(), Optional.empty());
         e.getPlayer().updateInventory();
     }
 }
