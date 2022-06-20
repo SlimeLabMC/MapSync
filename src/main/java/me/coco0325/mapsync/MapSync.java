@@ -67,12 +67,12 @@ public final class MapSync extends JavaPlugin implements SlimefunAddon {
         if(Bukkit.getVersion().contains("1.16")){
             getMapFunctionName = "a";
             colors_field = "colors";
-        }else if(Bukkit.getVersion().contains("1.17") || Bukkit.getVersion().contains("1.18")){
+        }else if(Bukkit.getVersion().contains("1.17") || Bukkit.getVersion().contains("1.18") || Bukkit.getVersion().contains("1.19")){
             getMapFunctionName = "a";
             colors_field = "g";
             Bukkit.getPluginManager().registerEvents(new MapRenderListener_1_17(this), this);
         }else{
-            this.getLogger().log(Level.SEVERE, "Wrong Minecraft Version! Now only support 1.16 to 1.18");
+            this.getLogger().log(Level.SEVERE, "Wrong Minecraft Version! Now only support 1.16 to 1.19");
             this.getPluginLoader().disablePlugin(this);
         }
 
