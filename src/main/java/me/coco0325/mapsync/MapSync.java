@@ -76,6 +76,11 @@ public final class MapSync extends JavaPlugin{
             this.getPluginLoader().disablePlugin(this);
         }
 
+        if(servername == null) {
+            this.getLogger().log(Level.SEVERE, "Please create a section call \"server-name\" in server.properties and give your server a unique name.");
+            this.getPluginLoader().disablePlugin(this);
+        }
+
         if(!new File(this.getDataFolder(), "config.yml").exists()){
             saveResource("config.yml", false);
         }
