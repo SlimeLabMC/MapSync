@@ -214,7 +214,7 @@ public class MapUtils {
                 if(!meta.getPersistentDataContainer().has(rawid, PersistentDataType.INTEGER)){
                     meta.getPersistentDataContainer().set(rawid, PersistentDataType.INTEGER, 0);
                 }
-                
+
                 if(meta.hasMapView()) {
                     for(MapRenderer mapRenderer : meta.getMapView().getRenderers()){
                         meta.getMapView().removeRenderer(mapRenderer);
