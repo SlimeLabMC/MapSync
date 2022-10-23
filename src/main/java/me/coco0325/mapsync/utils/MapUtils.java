@@ -180,20 +180,22 @@ public class MapUtils {
                     meta.getPersistentDataContainer().set(rawid, PersistentDataType.INTEGER, 0);
                 }
 
-                for(MapRenderer mapRenderer : meta.getMapView().getRenderers()){
-                    meta.getMapView().removeRenderer(mapRenderer);
-                }
+                if(meta.hasMapView()) {
+                    for(MapRenderer mapRenderer : meta.getMapView().getRenderers()){
+                        meta.getMapView().removeRenderer(mapRenderer);
+                    }
 
-                Objects.requireNonNull(meta.getMapView()).addRenderer(new MapRenderer() {
-                    @Override
-                    public void render(MapView map, MapCanvas canvas, Player player) {
-                        for(int i=0; i<128; i++){
-                            for(int j=0; j<128; j++){
-                                canvas.setPixel(i, j, MapPalette.TRANSPARENT);
+                    Objects.requireNonNull(meta.getMapView()).addRenderer(new MapRenderer() {
+                        @Override
+                        public void render(MapView map, MapCanvas canvas, Player player) {
+                            for(int i=0; i<128; i++){
+                                for(int j=0; j<128; j++){
+                                    canvas.setPixel(i, j, MapPalette.TRANSPARENT);
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
         }else{
             meta.getPersistentDataContainer().set(server, PersistentDataType.STRING, plugin.getServername());
