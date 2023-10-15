@@ -180,7 +180,7 @@ public class MapUtils {
                     meta.getPersistentDataContainer().set(rawid, PersistentDataType.INTEGER, 0);
                 }
 
-                if(meta.hasMapView()) {
+                if(meta.hasMapView() && meta.getMapView() != null) {
                     for(MapRenderer mapRenderer : meta.getMapView().getRenderers()){
                         meta.getMapView().removeRenderer(mapRenderer);
                     }
@@ -197,7 +197,7 @@ public class MapUtils {
                     });
                 }
             }
-        }else{
+        }else if(meta.hasMapView() && meta.getMapView() != null){
             meta.getPersistentDataContainer().set(server, PersistentDataType.STRING, plugin.getServername());
             meta.getPersistentDataContainer().set(rawid, PersistentDataType.INTEGER, meta.getMapId());
         }
