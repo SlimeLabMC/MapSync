@@ -20,7 +20,7 @@ public class GriefPreventionHook {
         if(claim == null) {
             return true;
         }
-        if (Objects.equals(plugin.getConfig().getString("hooks.Permission_type"), "Admin")){
+        if (plugin.getConfig().getString("hooks.Permission_type") == null || Objects.equals(plugin.getConfig().getString("hooks.Permission_type"), "Admin")){
             return claim.allowGrantPermission(player) == null;
         }
         return claim.hasExplicitPermission(player, ClaimPermission.valueOf(plugin.getConfig().getString("hooks.Permission_type")));

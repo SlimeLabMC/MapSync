@@ -6,8 +6,8 @@
 
 hooks: # Only the players with the build permission can create maps.
   griefprevention: false
-  #Available types:[ "Access" (/at) , "Build" (/trust) , "Admin" (/pt)]
-  Permission_type: "Build"
+  # Available types:[ "Access" (/at) , "Build" (/trust) , "Admin" (/pt)]
+  permission_type: "Admin"
 mapitem:
   lore: # The lore of map you want to add after sync.
     - ""
