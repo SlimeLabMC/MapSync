@@ -6,7 +6,8 @@
 
 hooks: # Only the players with the build permission can create maps.
   griefprevention: false
-
+  #Available types:[ "Access" (/at) , "Build" (/trust) , "Admin" (/pt)]
+  Permission_type: "Build"
 mapitem:
   lore: # The lore of map you want to add after sync.
     - ""
@@ -16,4 +17,4 @@ mapitem:
 message:
   already-sync: "&6[MapSync] &7This map is already synchronized."
   success-sync: "&6[MapSync] &aThis map is successfully synchronized!"
-  no-permission: "&6[MapSync] &cYou need grant permission in this claim to open a new map."
+  no-permission: "&6[MapSync] &cYou do not have the require permission in this claim to open a new map."
